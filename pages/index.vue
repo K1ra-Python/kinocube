@@ -7,10 +7,10 @@
     </div>
 </template>
 <script>
-import textIndex from '~/components/buttons/textIndex.vue';
-import signGoogle from '~/components/buttons/signGoogle.vue';
-import signUp from '~/components/buttons/signUp.vue';
-import signIn from '~/components/buttons/signIn.vue';
+import textIndex from '~/components/indexStuff/textIndex.vue';
+import signGoogle from '~/components/indexStuff/signGoogle.vue';
+import signUp from '~/components/indexStuff/signUp.vue';
+import signIn from '~/components/indexStuff/signIn.vue';
 export default {
     components: {
         textIndex,
