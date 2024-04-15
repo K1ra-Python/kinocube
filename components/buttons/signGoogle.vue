@@ -4,7 +4,7 @@
     </div>
 </template>
 <style lang="scss">
-btn {
+.btn {
     button {
         border: 3.30px solid #fff;
         border-radius: 11px;
@@ -14,6 +14,8 @@ btn {
         font-weight: 400;
         font-size: 19px;
         color: #fff;
+        background-color: rgba(28,28,28,0);
+        cursor: pointer;
     }
 }
 </style>
