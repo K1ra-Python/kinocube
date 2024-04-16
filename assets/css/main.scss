@@ -1,0 +1,21 @@
+@mixin button-style {
+    /* Общие стили для кнопок */
+    display: flex;
+    align-items: center;
+    flex-direction: row;
+    gap: 10px;
+    border-left: 0px;
+    border-right: 0px;
+    border-top: 0px;
+    border-bottom: 2px solid white;
+    width: 315px;
+    height: 54px;
+    background-color: rgba(28, 28, 28, 0);
+    cursor: pointer;
+    font-family: var(--font-family);
+    font-weight: 400;
+    font-size: 20px;
+    color: rgba(255, 255, 255, 0.8);
+
+    
+}
