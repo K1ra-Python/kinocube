@@ -1,7 +1,7 @@
 <template>
-    <div class="text">
+    <div class="textA">
         <span>
-            Моё первое самостоятельное приложение. Пользуйтесь смело!
+            Добро пожаловать обранто!
         </span>
         <div class="heart">
             <img src="~/assets/heart.svg">
@@ -9,16 +9,17 @@
     </div>
 </template>
 <style lang="scss">
-.text {
+.textA {
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     padding: 1%;
-    margin-top: 5%;
+    margin-top: 20%;
     gap: 20px;
+
     span {
-        width: 500px;
+
         font-family: var(--font-family);
         font-weight: 400;
         font-size: 20px;
