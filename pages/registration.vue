@@ -14,6 +14,8 @@ import password from '~/components/registrationStuff/password.vue';
 import avatarka from '~/components/registrationStuff/avatarka.vue';
 import next from '~/components/registrationStuff/next.vue';
 
+
+
 export default {
     components: {
         name,

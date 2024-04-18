@@ -5,7 +5,7 @@
        '~/assets/css/main.scss'
      ],
     plugins:[
-      '~/plugins/firebase.js'
+      
     ]
    }
    
