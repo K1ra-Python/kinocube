@@ -1,9 +1,25 @@
 <template>
     <div>
-        <input class="my-button" name="name" type="text" placeholder="Ваше дело придумать логин" />
+        <input class="my-button" name="name" type="text" placeholder="Ваше дело придумать логин" v-model="userLogin" @input="updateLogin"/>
         <label for="name">Придумайте лоигн</label>
     </div>
 </template>
+
+<script>
+export default{
+    data(){
+        return{
+            userLogin:''
+        }
+    },
+    methods:{
+        updateLogin(){
+            this.$emit('update:login',this.userLogin)
+        }
+    }
+}
+</script>
+
 <style lang="scss">
 @import '~/assets/css/main.scss';
 

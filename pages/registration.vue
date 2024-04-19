@@ -1,8 +1,8 @@
 <template>
     <div class="wrapReg">
-        <name></name>
-        <login></login>
-        <password></password>
+        <name @update:name="updateName"></name>
+        <login @update:login="updateLogin" ></login>
+        <password @update:password="updatePassword"></password>
         <avatarka></avatarka>
         <next></next>
         <button @click="addUser">Добавить пользователя</button>
@@ -24,7 +24,11 @@ import { addDoc, collection } from 'firebase/firestore';
 export default defineComponent({
     data() {
         return {
-            message: "",
+            userData: {
+                name: '',
+                login: '',
+                password: '',
+            }
         };
     },
     setup() {
@@ -43,14 +47,18 @@ export default defineComponent({
         next
     },
     methods: {
+        updateName(name) {
+            this.userData.name = name
+        },
+        updateLogin(login) {
+            this.userData.login = login
+        },
+        updatePassword(password) {
+            this.userData.password = password
+        },
         async addUser() {
             try {
-                const docRef = await addDoc(collection(this.db, 'users'), {
-                    name: 'John Doe',
-                    login: 'login',
-                    password: 'pass',
-                    // Другие поля, если они нужны
-                });
+                const docRef = await addDoc(collection(this.db, 'users'), this.userData);
                 console.log('User added with ID:', docRef.id);
             } catch (error) {
                 this.message = "Ошибка при добавлении пользователя: " + error.message;
