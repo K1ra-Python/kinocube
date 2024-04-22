@@ -4,17 +4,30 @@
             Загрузить Аватарку
         </label>
     </div>
-    <input id="file-upload" type="file" />
+    <input id="file-upload" type="file" @change="onFileSelected" />
 </template>
+
+<script>
+export default {
+    methods: {
+        onFileSelected(event) {
+            const file = event.target.files[0];
+            this.$emit('update:avatar', file);
+        }
+    }
+}
+</script>
+
 <style lang="scss">
 input[type="file"] {
     display: none;
 }
 
 .wrapLabel {
-display:flex;
-justify-content:center;
-margin-top: 10%;
+    display: flex;
+    justify-content: center;
+    margin-top: 10%;
+
     label {
         border: 3px solid #fff;
         border-radius: 50px;
