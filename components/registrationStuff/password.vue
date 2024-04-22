@@ -1,6 +1,6 @@
 <template>
     <div>
-        <input class="my-button" name="name" type="text" placeholder="Ваш пароль" v-model="userPassword" @input="updatePassword" />
+        <input class="my-button" name="name" type="password" placeholder="Ваш пароль" v-model="userPassword" @input="updatePassword" />
         <label for="name">Всегда делайте найдёжный пароль</label>
     </div>
 </template>

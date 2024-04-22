@@ -18,29 +18,86 @@ import next from '~/components/registrationStuff/next.vue';
 
 
 // Add a document to a collection
-
+import { defineComponent, ref, reactive } from 'vue';
 import { addDoc, collection } from 'firebase/firestore';
 import { getStorage, ref as storageRef, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { useVuelidate } from '@vuelidate/core'
 import { required, email } from '@vuelidate/validators'
 export default defineComponent({
-    data() {
-        return {
+    setup() {
+        const { $firestore } = useNuxtApp();
+        const db = ref($firestore);
+        const state = reactive({
             userData: {
                 name: '',
                 login: '',
                 password: '',
                 avatarkaUrl: '',
             },
-            avatarFile: null
-        };
-    },
-    setup() {
-        const { $firestore } = useNuxtApp();
-        const db = ref($firestore);
+            avatarFile: null,
+            message: '' // Для хранения сообщений об ошибках
+        });
+        const v$ = useVuelidate(
+            {
+                userData: {
+                    name: { required },
+                    login: { required },
+                    password: { required },
+                    // Определить правила валидации для avatarUrl, если необходимо
+                },
+            },
+            state
+        );
 
+        // Методы теперь определяются как функции
+        function updateName(name) {
+            state.userData.name = name;
+        }
+
+        function updateLogin(login) {
+            state.userData.login = login;
+        }
+
+        function updatePassword(password) {
+            state.userData.password = password;
+        }
+
+        function updateAvatar(file) {
+            state.avatarFile = file;
+        }
+
+        async function addUser() {
+            v$.value.$touch();
+            if (!v$.value.$invalid) {
+                try {
+                    const storage = getStorage();
+                    const avatarRef = storageRef(storage, 'avatars/' + state.avatarFile.name);
+                    const snapshot = await uploadBytes(avatarRef, state.avatarFile);
+                    const avatarUrl = await getDownloadURL(snapshot.ref);
+                    state.userData.avatarkaUrl = avatarUrl;
+
+                    const docRef = await addDoc(collection(db.value, 'users'), state.userData);
+                    console.log('User added with ID:', docRef.id);
+                    state.avatarFile = null;
+                } catch (error) {
+                    state.message = "Ошибка при добавлении пользователя: " + error.message;
+                    console.error("Error adding document:", error);
+                }
+            } else {
+                alert('Некоторые поля заполнены некорректно. Пожалуйста, проверьте ввод и повторите попытку.');
+            }
+        }
+
+        // Возвращаем все переменные и функции, чтобы они были доступны в шаблоне
         return {
             db,
+            state,
+            v$,
+            updateName,
+            updateLogin,
+            updatePassword,
+            updateAvatar,
+            addUser
         };
     },
     components: {
