@@ -43,7 +43,6 @@ export default defineComponent({
                     name: { required },
                     login: { required },
                     password: { required },
-                    // Определить правила валидации для avatarUrl, если необходимо
                 },
             },
             state
