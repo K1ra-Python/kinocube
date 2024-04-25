@@ -1,6 +1,6 @@
 <template>
     <div>
-        <input class="my-button" name="name" type="text" placeholder="Ваш логин" />
+        <input class="my-button" name="name" type="email" placeholder="Ваш email" />
     </div>
 </template>
 <style lang="scss">

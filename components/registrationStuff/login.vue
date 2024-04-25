@@ -1,7 +1,7 @@
 <template>
     <div>
-        <input class="my-button" name="name" type="text" placeholder="Ваше дело придумать логин" v-model="userLogin" @input="updateLogin"/>
-        <label for="name">Придумайте лоигн</label>
+        <input class="my-button" name="email" type="email" placeholder="Ваше дело придумать логин" v-model="userLogin" @input="updateLogin"/>
+        <label for="email">Придумайте лоигн</label>
     </div>
 </template>
 
