@@ -1,7 +1,9 @@
-   // nuxt.config.ts
-   export default {
-     css: [
-       '~/assets/css/main.css'
-     ]
-   }
-   
+// nuxt.config.ts
+export default {
+  css: [
+    '~/assets/css/main.css',
+    '~/assets/css/main.scss'
+  ],
+  plugins: ['~/plugins/firebase.js'],
+}
+
