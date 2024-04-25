@@ -1,7 +1,7 @@
 <template>
     <div>
         <input class="my-button" name="name" type="password" placeholder="Ваш пароль" v-model="passwordAuthto"
-            @input="updatePassword" />
+            @input="updateAuthPassword" />
     </div>
 </template>
 
@@ -13,7 +13,7 @@ export default {
         }
     },
     methods: {
-        updateAuthPass(){
+        updateAuthPassword(){
             this.$emit('update:password' ,this.passwordAuthto)
         }
     },

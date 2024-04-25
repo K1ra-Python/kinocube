@@ -1,8 +1,24 @@
 <template>
     <div>
-        <input class="my-button" name="name" type="email" placeholder="Ваш email" />
+        <input class="my-button" name="name" type="email" placeholder="Ваш email" v-model="userEmail"
+            @input="updateEmail" />
     </div>
 </template>
+
+<script>
+export default {
+    data() {
+        return {
+            userEmail: ''
+        }
+
+    },methods: {
+        updateEmail() {
+            this.$emit('update:email', this.userEmail)
+        }
+    },
+}
+</script>
 <style lang="scss">
 @import '~/assets/css/main.scss';
 
