@@ -62,26 +62,27 @@ const getBackgroundStyle = (imageUrl) => {
 };
 
 
-
-onMounted(async () => {
-  const user = auth.currentUser;
-  if (user) {
-    const userDocRef = doc(db, 'users', user.uid);
-    try {
-      const userDocSnap = await getDoc(userDocRef);
-      if (userDocSnap.exists()) {
-        userProfile.value = userDocSnap.data();
-      } else {
-        console.error('Нет данных о пользователе')
+onMounted(() => {
+  onAuthStateChanged(auth, async (authUser) => {
+    if (authUser) {
+      // Пользователь авторизован, здесь можно загружать данные профиля
+      const userDocRef = doc(db, 'users', authUser.uid);
+      try {
+        const userDocSnap = await getDoc(userDocRef);
+        if (userDocSnap.exists()) {
+          userProfile.value = userDocSnap.data();
+        } else {
+          console.error('Нет данных о пользователе')
+        }
+      } catch (error) {
+        console.error('Ошибка при получении данных о пользователе:', error);
       }
-    } catch (error) {
-      console.error('Ошибка при получении данных о пользователе:', error);
+    } else {
+      // Пользователь не авторизован, выполняем редирект на страницу авторизации
+      console.error('Пользователь не авторизован. Перенаправление на страницу входа.');
+      router.push('/authorization');
     }
-  } else {
-    console.error('Пользователь не авторизован. Перенаправление на страницу входа.');
-    // Тут можно добавить логику перенаправления, например через роутер:
-    router.push('/authorization');
-  }
+  });
 });
 
 
