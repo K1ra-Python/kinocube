@@ -46,7 +46,7 @@ import history from '~/components/profileStuff/history.vue';
 
 
 import { onMounted, ref } from 'vue';
-import { getAuth } from 'firebase/auth';
+import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import { getFirestore, doc, getDoc } from 'firebase/firestore';
 
 
