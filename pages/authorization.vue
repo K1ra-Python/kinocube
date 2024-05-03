@@ -17,6 +17,7 @@ import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 import { useVuelidate } from '@vuelidate/core'
 import { required, email } from '@vuelidate/validators'
 import { useRouter } from 'vue-router';
+import { onAuthStateChanged } from 'firebase/auth';
 import { async } from '@firebase/util';
 
 export default defineComponent({
