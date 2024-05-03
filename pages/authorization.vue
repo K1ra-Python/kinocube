@@ -27,11 +27,13 @@ export default defineComponent({
         const auth = getAuth();
         onAuthStateChanged(auth, (user) => {
             if (user) {
+                router.push('/profile');
                 // User is signed in, see docs for a list of available properties
                 // https://firebase.google.com/docs/reference/js/auth.user
                 const uid = user.uid;
                 // ...
             } else {
+                router.push('/authorization');
                 // User is signed out
                 // ...
             }
