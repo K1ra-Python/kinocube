@@ -29,7 +29,8 @@ const route = useRoute()
 // Допустим, вы получаете подробности о фильме здесь
 // ...
 const movies = ref([]);
-/**const getRelatedByQueryBuilderMovies = async (movieName) => {
+/*Эта асинхронная функция будет нам нужна для фильтра*/
+const getRelatedByQueryBuilderMovies = async (movieName) => {
     // Создаем билдер запросов для фильмов
     const queryBuilder = new MovieQueryBuilder();
 
@@ -47,6 +48,7 @@ const movies = ref([]);
         // Добавим страны
         //.filterExact('countries.name', 'США')
         //.filterExact('countries.name', 'Россия')
+        .filterExact('genres.name', 'аниме')
         // Добавляем сортировку по рейтингу
         // Добавляем пагинацию и получаем 1 страницу по с 10 фильмами на странице
         // Собираем запрос
@@ -59,13 +61,13 @@ const movies = ref([]);
         const { docs, page, limit } = data;
         console.log(`Страница ${page} из ${limit}`);
         console.log(docs);
-        movies.value = docs;
+        moviess.value = docs;
     }
 
     // Если будет ошибка, то выведем ее в консоль
     if (error) console.log(error, message);
-};**/
-
+};
+/*Эта асинхронная функция отвечает за показ первого рандомного фильма, дабы внести разнообразие в подборку для пользователя*/
 const searchMovies = async (movieName) => {
     const queryBuilder = new MovieQueryBuilder();
     // Создаем запрос для поиска фильмов по подходящих под наш запрос
@@ -95,6 +97,7 @@ onMounted(() => {
     const movieName = decodeURIComponent(route.params.newMovie);
     searchMovies(movieName);
     console.log(movieName);
+   //getRelatedByQueryBuilderMovies()
 });
 
 const goBack = () => {
@@ -102,6 +105,7 @@ const goBack = () => {
 };
 
 const goToNextMovie = () => {
+
     // Здесь вам нужно будет получить ID следующего фильма
     // Могут быть разные подходы, в зависимости от вашей бизнес-логики
     const nextMovieId = getNextMovieId();
