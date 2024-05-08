@@ -24,3 +24,5 @@ const db = getFirestore(app);
 export default defineNuxtPlugin((nuxtApp) => {
     nuxtApp.provide('firestore', db);
 });
+
+/*dont ask */
