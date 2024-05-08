@@ -19,7 +19,7 @@ import next from '~/components/registrationStuff/next.vue';
 
 // Add a document to a collection
 import { defineComponent, ref, reactive } from 'vue';
-import { addDoc, collection } from 'firebase/firestore';
+import { addDoc, collection,setDoc,doc } from 'firebase/firestore';
 import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth';
 import { getStorage, ref as storageRef, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { useVuelidate } from '@vuelidate/core'
@@ -80,8 +80,7 @@ export default defineComponent({
                         const avatarUrl = await getDownloadURL(snapshot.ref);
                         state.userData.avatarkaUrl = avatarUrl;
 
-                        const docRef = await addDoc(collection(db.value, 'users'), state.userData);
-                        console.log('User added with ID:', docRef.id);
+                        const docRef = await setDoc(doc(db.value, 'users',user.uid), state.userData);
                         state.avatarFile = null;
                         // ...
                         // Очистка состояния

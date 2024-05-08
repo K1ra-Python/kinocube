@@ -1,3 +1,179 @@
 <template>
-    <h1>hi</h1>
+  <div class="wrapProfile">
+    <div class="imageAndName">
+
+
+      <div class="imageProfile">
+        <svg v-if="userProfile" width="198" height="220" fill="none" viewBox="0 0 198 220"
+          xmlns="http://www.w3.org/2000/svg">
+
+          <defs>
+            <clipPath id="cp">
+              <path
+                d="M11.763 49.2037C10.4338 49.9037 9.42045 50.7889 8.65643 51.5292C7.14045 52.0419 5.8254 53.0213 4.93529 54.2934L4.90696 54.3339L4.88118 54.376C4.56645 54.8908 4.23006 55.5399 3.99376 56.3171C3.55406 57.5188 3.35128 58.9541 3.33594 60.4065L2.40146 148.888C2.30508 158.013 6.9979 166.132 14.0286 170.725L14.0384 170.731L15.4634 171.647L15.4839 171.661L15.5047 171.673L88.4785 215.518L88.4848 215.522L88.4911 215.525C89.8521 216.326 91.1929 216.876 92.5039 217.11L92.5168 217.112L92.5297 217.114C93.479 217.268 95.1299 217.449 96.5015 217.589C97.1963 217.66 97.8343 217.721 98.2985 217.765C98.5306 217.787 98.7196 217.805 98.8506 217.817L99.0021 217.831L99.0419 217.835L99.0522 217.836L99.0549 217.836L99.0556 217.836L99.0558 217.836L99.2 216.242L99.0559 217.836L99.2526 217.854L99.4477 217.823C99.656 217.791 100.11 217.741 100.771 217.669L100.892 217.656C101.589 217.58 102.443 217.486 103.304 217.374C104.161 217.263 105.05 217.131 105.813 216.977C106.482 216.842 107.312 216.644 107.877 216.309L181.594 174.045L181.598 174.043L183.13 173.158L183.15 173.147L183.169 173.135C190.385 168.695 195.246 160.678 195.342 151.556L196.278 62.9436C196.288 62.0566 196.196 61.243 196.065 60.5151C196.198 59.9722 196.273 59.4186 196.278 58.8663C196.279 58.8531 196.279 58.839 196.279 58.8239C196.282 58.6204 196.287 58.2543 196.199 57.8437L196.199 57.8306L196.178 57.6995C195.955 56.2692 195.267 54.9075 194.203 53.7131C193.362 52.7505 192.324 51.9105 191.017 51.1874L116.172 6.92043L116.172 6.92035L116.172 6.92007L116.17 6.91898L116.168 6.91759L116.163 6.91476L116.136 6.89846L116.032 6.83686L115.663 6.61739C115.357 6.43592 114.948 6.1936 114.535 5.95096C114.124 5.709 113.704 5.46399 113.38 5.27827C113.219 5.18622 113.073 5.10385 112.961 5.0425C112.906 5.01298 112.846 4.98054 112.789 4.9525C112.763 4.93967 112.717 4.91736 112.663 4.89479C112.661 4.89384 112.658 4.89282 112.656 4.89172C109.405 3.33479 105.768 2.44282 101.849 2.40143C97.7918 2.35857 94.0175 3.28372 90.6341 4.87936L90.5807 4.90456L90.5293 4.93364L87.7123 6.526L87.7087 6.528L11.763 49.2037Z"
+                stroke="url(#paint0_linear_822_597)" stroke-width="3.2" />
+            </clipPath>
+
+            <linearGradient id="paint0_linear_822_597" x1="3.99999" y1="160.409" x2="197.197" y2="64.9278"
+              gradientUnits="userSpaceOnUse">
+              <stop offset="0.00197276" />
+              <stop offset="1" stop-color="white" />
+            </linearGradient>
+          </defs>
+          <path
+            d="M11.763 49.2037C10.4338 49.9037 9.42045 50.7889 8.65643 51.5292C7.14045 52.0419 5.8254 53.0213 4.93529 54.2934L4.90696 54.3339L4.88118 54.376C4.56645 54.8908 4.23006 55.5399 3.99376 56.3171C3.55406 57.5188 3.35128 58.9541 3.33594 60.4065L2.40146 148.888C2.30508 158.013 6.9979 166.132 14.0286 170.725L14.0384 170.731L15.4634 171.647L15.4839 171.661L15.5047 171.673L88.4785 215.518L88.4848 215.522L88.4911 215.525C89.8521 216.326 91.1929 216.876 92.5039 217.11L92.5168 217.112L92.5297 217.114C93.479 217.268 95.1299 217.449 96.5015 217.589C97.1963 217.66 97.8343 217.721 98.2985 217.765C98.5306 217.787 98.7196 217.805 98.8506 217.817L99.0021 217.831L99.0419 217.835L99.0522 217.836L99.0549 217.836L99.0556 217.836L99.0558 217.836L99.2 216.242L99.0559 217.836L99.2526 217.854L99.4477 217.823C99.656 217.791 100.11 217.741 100.771 217.669L100.892 217.656C101.589 217.58 102.443 217.486 103.304 217.374C104.161 217.263 105.05 217.131 105.813 216.977C106.482 216.842 107.312 216.644 107.877 216.309L181.594 174.045L181.598 174.043L183.13 173.158L183.15 173.147L183.169 173.135C190.385 168.695 195.246 160.678 195.342 151.556L196.278 62.9436C196.288 62.0566 196.196 61.243 196.065 60.5151C196.198 59.9722 196.273 59.4186 196.278 58.8663C196.279 58.8531 196.279 58.839 196.279 58.8239C196.282 58.6204 196.287 58.2543 196.199 57.8437L196.199 57.8306L196.178 57.6995C195.955 56.2692 195.267 54.9075 194.203 53.7131C193.362 52.7505 192.324 51.9105 191.017 51.1874L116.172 6.92043L116.172 6.92035L116.172 6.92007L116.17 6.91898L116.168 6.91759L116.163 6.91476L116.136 6.89846L116.032 6.83686L115.663 6.61739C115.357 6.43592 114.948 6.1936 114.535 5.95096C114.124 5.709 113.704 5.46399 113.38 5.27827C113.219 5.18622 113.073 5.10385 112.961 5.0425C112.906 5.01298 112.846 4.98054 112.789 4.9525C112.763 4.93967 112.717 4.91736 112.663 4.89479C112.661 4.89384 112.658 4.89282 112.656 4.89172C109.405 3.33479 105.768 2.44282 101.849 2.40143C97.7918 2.35857 94.0175 3.28372 90.6341 4.87936L90.5807 4.90456L90.5293 4.93364L87.7123 6.526L87.7087 6.528L11.763 49.2037Z"
+            stroke="url(#paint0_linear_822_597)" stroke-width="3.2" fill="none" />
+          <image clip-path="url(#cp)" :href="userProfile.avatarkaUrl" x="0" y="0" width="198" height="220"
+            preserveAspectRatio="xMidYMid slice" />
+        </svg>
+
+      </div>
+      <div class="name">
+        <p v-if="userProfile">{{ userProfile.name }}</p>
+      </div>
+    </div>
+    <div class="wrapus">
+      <changeGeners></changeGeners>
+      <liked></liked>
+      <history></history>
+    </div>
+    <!-- Другие элементы интерфейса пользователя -->
+  </div>
+  <div class="wrapMovie">
+
+
+    <button class="goToSearch"  v-if="movies.length" @click="goToMovieDetails(movies[0].name)">
+      К поиску
+    </button>
+  </div>
 </template>
+  
+<script setup>
+
+import changeGeners from '~/components/profileStuff/changeGeners.vue';
+import liked from '~/components/profileStuff/liked.vue';
+import history from '~/components/profileStuff/history.vue';
+import { useRouter } from 'vue-router';
+import { onMounted, ref } from 'vue';
+import { getAuth, onAuthStateChanged } from 'firebase/auth';
+import { getFirestore, doc, getDoc } from 'firebase/firestore';
+import {
+  KinopoiskDev,
+  MovieQueryBuilder,
+  SPECIAL_VALUE
+} from '@openmoviedb/kinopoiskdev_client';
+
+
+const db = getFirestore();
+const auth = getAuth();
+const userProfile = ref(null);
+const router = useRouter();
+const kp = new KinopoiskDev('Y5W270D-51F4EHG-KW5T65G-H56CJ96');
+const movies = ref([]);
+
+onMounted(() => {
+  onAuthStateChanged(auth, async (authUser) => {
+    if (authUser) {
+      // Пользователь авторизован, здесь можно загружать данные профиля
+      const userDocRef = doc(db, 'users', authUser.uid);
+      try {
+        const userDocSnap = await getDoc(userDocRef);
+        if (userDocSnap.exists()) {
+          userProfile.value = userDocSnap.data();
+        } else {
+          console.error('Нет данных о пользователе')
+        }
+      } catch (error) {
+        console.error('Ошибка при получении данных о пользователе:', error);
+      }
+    } else {
+      // Пользователь не авторизован, выполняем редирект на страницу авторизации
+      console.error('Пользователь не авторизован. Перенаправление на страницу входа.');
+      router.push('/authorization');
+    }
+  });
+  getRelatedByQueryBuilderMovies();
+});
+const getRelatedByQueryBuilderMovies = async () => {
+  // Создаем билдер запросов для фильмов
+  const queryBuilder = new MovieQueryBuilder();
+
+  // Выбираем поля, которые мы хотим получить в ответе
+  // Полный список полей можно посмотреть в документации
+  // https://api.kinopoisk.dev/v1/documentation для метода /v1.3/movie
+  const query = queryBuilder
+    .select(['id', 'name', 'rating', 'poster', 'year'])
+    // Добавляем фильтр поиска по указанному диапазону года
+    .filterRange('year', [2020, 2023])
+    // Добавляем фильтр поиска по указанному диапазону рейтинга
+    .filterRange('rating.kp', [7.5, 10])
+    // Добавляем фильтр для поиска фильмов с постером
+    .filterExact('poster.url', SPECIAL_VALUE.NOT_NULL)
+    // Добавим страны
+    .filterExact('countries.name', 'США')
+    .filterExact('countries.name', 'Россия')
+    // Добавляем сортировку по рейтингу
+    // Добавляем пагинацию и получаем 1 страницу по с 10 фильмами на странице
+    // Собираем запрос
+    .build();
+
+  // Отправляем запрос на получение фильмов
+  const { data, error, message } = await kp.movie.getByFilters(query);
+
+  if (data) {
+    const { docs, page, limit } = data;
+    console.log(`Страница ${page} из ${limit}`);
+    console.log(docs);
+    movies.value = docs;
+  }
+
+  // Если будет ошибка, то выведем ее в консоль
+  if (error) console.log(error, message);
+};
+const goToMovieDetails = (movieName) => {
+  // Здесь используйте актуальный ID фильма, который надо отобразить
+  const movieId = movieName;
+  const encodedMovieName = encodeURIComponent(movieName); 
+  console.log('Encoded Movie Name: ', encodedMovieName); // Должен выводить закодированное название
+  //console.log(movieId);
+  router.push(`/listMovies/${encodedMovieName}`);
+};
+
+
+</script>
+  
+<style lang="scss">
+.wrapProfile {
+  margin-top: 5%;
+  margin-left: -35%;
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+  align-content: start;
+}
+
+.imageAndName {
+  display: flex;
+  gap: 30px;
+  align-content: flex-end;
+  align-items: flex-end;
+}
+
+.name {
+  p {
+    font-family: var(--font-family);
+    font-weight: 400;
+    font-size: 38px;
+    text-transform: uppercase;
+    color: #fff;
+
+  }
+}
+
+.wrapus {
+  margin-top: 10%;
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+}
+</style>

@@ -17,6 +17,7 @@ import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 import { useVuelidate } from '@vuelidate/core'
 import { required, email } from '@vuelidate/validators'
 import { useRouter } from 'vue-router';
+import { onAuthStateChanged } from 'firebase/auth';
 import { async } from '@firebase/util';
 
 export default defineComponent({
@@ -24,6 +25,19 @@ export default defineComponent({
         // Вместо деструктуризации $router используйте контекст напрямую для получения маршрутизатора
         const nuxtApp = useNuxtApp();
         const auth = getAuth();
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                router.push('/profile');
+                // User is signed in, see docs for a list of available properties
+                // https://firebase.google.com/docs/reference/js/auth.user
+                const uid = user.uid;
+                // ...
+            } else {
+                router.push('/authorization');
+                // User is signed out
+                // ...
+            }
+        });
         const router = useRouter()
         const state = reactive({
             userAuthData: {

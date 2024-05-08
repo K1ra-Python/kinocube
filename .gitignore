@@ -9,7 +9,8 @@ dist
 # Node dependencies
 node_modules
 
-plugins/firebase.js
+/plugins/firebase.js
+
 
 # Logs
 logs
