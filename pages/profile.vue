@@ -39,6 +39,13 @@
     </div>
     <!-- Другие элементы интерфейса пользователя -->
   </div>
+  <div class="wrapMovie">
+
+
+    <button class="goToSearch"  v-if="movies.length" @click="goToMovieDetails(movies[0].name)">
+      К поиску
+    </button>
+  </div>
 </template>
   
 <script setup>
@@ -46,24 +53,23 @@
 import changeGeners from '~/components/profileStuff/changeGeners.vue';
 import liked from '~/components/profileStuff/liked.vue';
 import history from '~/components/profileStuff/history.vue';
-
-
+import { useRouter } from 'vue-router';
 import { onMounted, ref } from 'vue';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import { getFirestore, doc, getDoc } from 'firebase/firestore';
-
+import {
+  KinopoiskDev,
+  MovieQueryBuilder,
+  SPECIAL_VALUE
+} from '@openmoviedb/kinopoiskdev_client';
 
 
 const db = getFirestore();
 const auth = getAuth();
 const userProfile = ref(null);
-const getBackgroundStyle = (imageUrl) => {
-  return {
-    'background-image': `url(${imageUrl})`, // Исправлено здесь
-    'background-size': 'cover'
-  };
-};
-
+const router = useRouter();
+const kp = new KinopoiskDev('Y5W270D-51F4EHG-KW5T65G-H56CJ96');
+const movies = ref([]);
 
 onMounted(() => {
   onAuthStateChanged(auth, async (authUser) => {
@@ -86,16 +92,58 @@ onMounted(() => {
       router.push('/authorization');
     }
   });
+  getRelatedByQueryBuilderMovies();
 });
+const getRelatedByQueryBuilderMovies = async () => {
+  // Создаем билдер запросов для фильмов
+  const queryBuilder = new MovieQueryBuilder();
 
+  // Выбираем поля, которые мы хотим получить в ответе
+  // Полный список полей можно посмотреть в документации
+  // https://api.kinopoisk.dev/v1/documentation для метода /v1.3/movie
+  const query = queryBuilder
+    .select(['id', 'name', 'rating', 'poster', 'year'])
+    // Добавляем фильтр поиска по указанному диапазону года
+    .filterRange('year', [2020, 2023])
+    // Добавляем фильтр поиска по указанному диапазону рейтинга
+    .filterRange('rating.kp', [7.5, 10])
+    // Добавляем фильтр для поиска фильмов с постером
+    .filterExact('poster.url', SPECIAL_VALUE.NOT_NULL)
+    // Добавим страны
+    .filterExact('countries.name', 'США')
+    .filterExact('countries.name', 'Россия')
+    // Добавляем сортировку по рейтингу
+    // Добавляем пагинацию и получаем 1 страницу по с 10 фильмами на странице
+    // Собираем запрос
+    .build();
 
+  // Отправляем запрос на получение фильмов
+  const { data, error, message } = await kp.movie.getByFilters(query);
+
+  if (data) {
+    const { docs, page, limit } = data;
+    console.log(`Страница ${page} из ${limit}`);
+    console.log(docs);
+    movies.value = docs;
+  }
+
+  // Если будет ошибка, то выведем ее в консоль
+  if (error) console.log(error, message);
+};
+const goToMovieDetails = (movieName) => {
+  // Здесь используйте актуальный ID фильма, который надо отобразить
+  const movieId = movieName;
+  const encodedMovieName = encodeURIComponent(movieName); 
+  console.log('Encoded Movie Name: ', encodedMovieName); // Должен выводить закодированное название
+  //console.log(movieId);
+  router.push(`/listMovies/${encodedMovieName}`);
+};
 
 
 </script>
   
 <style lang="scss">
-
-.wrapProfile{
+.wrapProfile {
   margin-top: 5%;
   margin-left: -35%;
   display: flex;
@@ -103,12 +151,14 @@ onMounted(() => {
   align-items: start;
   align-content: start;
 }
-.imageAndName{
+
+.imageAndName {
   display: flex;
   gap: 30px;
   align-content: flex-end;
   align-items: flex-end;
 }
+
 .name {
   p {
     font-family: var(--font-family);
@@ -119,7 +169,8 @@ onMounted(() => {
 
   }
 }
-.wrapus{
+
+.wrapus {
   margin-top: 10%;
   display: flex;
   flex-direction: column;
