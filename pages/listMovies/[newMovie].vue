@@ -23,7 +23,7 @@ import {
 import { ref } from 'vue';
 import { onMounted } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
-import { useSelectedGenres, setSelectedGenres } from '~/composables/selectedGenres'
+import { useSelectedGenres} from '~/composables/selectedGenres'
 // Здесь ваш клиентский API ключ
 const kp = new KinopoiskDev('Y5W270D-51F4EHG-KW5T65G-H56CJ96');
 const router = useRouter();
