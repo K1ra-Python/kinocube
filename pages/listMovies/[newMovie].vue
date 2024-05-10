@@ -1,9 +1,12 @@
 <template>
+    <div class="filter">
+
+    </div>
     <div class="movie-details">
         <h1></h1>
         <div v-for="movie in movies" :key="movie.id" class="wrapMovie">
             {{ movie.name }}
-            <img :src="movie.poster"  width="100" height="100">
+            <img :src="movie.poster.url" width="100" height="100">
         </div>
         <!-- Ваша форма и описание фильма здесь -->
         <button @click="goBack">Вернуться назад</button>
@@ -20,53 +23,47 @@ import {
 import { ref } from 'vue';
 import { onMounted } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
-
+import { useSelectedGenres, setSelectedGenres } from '~/composables/selectedGenres'
 // Здесь ваш клиентский API ключ
 const kp = new KinopoiskDev('Y5W270D-51F4EHG-KW5T65G-H56CJ96');
 const router = useRouter();
 const movieDetails = ref(null);
 const route = useRoute()
-// Допустим, вы получаете подробности о фильме здесь
-// ...
+const genres = useSelectedGenres()
 const movies = ref([]);
-/*Эта асинхронная функция будет нам нужна для фильтра*/
-const getRelatedByQueryBuilderMovies = async (movieName) => {
-    // Создаем билдер запросов для фильмов
-    const queryBuilder = new MovieQueryBuilder();
+const filterSearch = async () => {
+    const selectedGenres = ['мелодрама', 'ужасы'];
 
-    // Выбираем поля, которые мы хотим получить в ответе
-    // Полный список полей можно посмотреть в документации
-    // https://api.kinopoisk.dev/v1/documentation для метода /v1.3/movie
-    const query = queryBuilder
-        .select(['id', 'name', 'rating', 'poster', 'year'])
-        // Добавляем фильтр поиска по указанному диапазону года
-        //.filterRange('year', [2020, 2023])
-        // Добавляем фильтр поиска по указанному диапазону рейтинга
-        //.filterRange('rating.kp', [7.5, 10])
-        // Добавляем фильтр для поиска фильмов с постером
-        //.filterExact('poster.url', SPECIAL_VALUE.NOT_NULL)
-        // Добавим страны
-        //.filterExact('countries.name', 'США')
-        //.filterExact('countries.name', 'Россия')
-        .filterExact('genres.name', 'аниме')
-        // Добавляем сортировку по рейтингу
-        // Добавляем пагинацию и получаем 1 страницу по с 10 фильмами на странице
-        // Собираем запрос
-        .build();
+    // Кодируем жанры для URL
+    const genreFilters = selectedGenres.map(genre => `genres.name = ${encodeURIComponent(genre)}`).join('&');
+    const url = `https://api.kinopoisk.dev/v1.4/movie?page=1&limit=1&${genreFilters}`;
 
-    // Отправляем запрос на получение фильмов
-    const { data, error, message } = await kp.movie.getByFilters(query);
+    try {
+        const response = await fetch(url, {
+            method: 'GET',
+            headers: {
+                accept: 'application/json',
+                'X-API-KEY': 'Y5W270D-51F4EHG-KW5T65G-H56CJ96',
+            },
+        });
 
-    if (data) {
+        if (!response.ok) {
+            throw new Error(`Ошибка: ${response.status}`);
+        }
+
+        const data = await response.json();
         const { docs, page, limit } = data;
+
         console.log(`Страница ${page} из ${limit}`);
         console.log(docs);
-        moviess.value = docs;
-    }
+        movies.value = docs; // Для Vue 3 Composition API
 
-    // Если будет ошибка, то выведем ее в консоль
-    if (error) console.log(error, message);
-};
+    } catch (error) {
+        console.error("Произошла ошибка при выполнении запроса: ", error);
+    }
+}
+
+
 /*Эта асинхронная функция отвечает за показ первого рандомного фильма, дабы внести разнообразие в подборку для пользователя*/
 const searchMovies = async (movieName) => {
     const queryBuilder = new MovieQueryBuilder();
@@ -74,7 +71,7 @@ const searchMovies = async (movieName) => {
     const query = queryBuilder
         // Указываем что хотим получить фильм 
         .query(movieName)
-        
+
         // Добавляем пагинацию и получаем 1 страницу по с 1 фильмами на странице
         .paginate(1, 1)
         // Собираем запрос
@@ -86,7 +83,7 @@ const searchMovies = async (movieName) => {
         const { docs, page, limit } = data;
         console.log(`Страница ${page} из ${limit}`);
         console.log(docs);
-        movies.value=docs
+        moviess.value = docs
     }
 
     // Если будет ошибка, то выведем ее в консоль
@@ -97,7 +94,8 @@ onMounted(() => {
     const movieName = decodeURIComponent(route.params.newMovie);
     searchMovies(movieName);
     console.log(movieName);
-   //getRelatedByQueryBuilderMovies()
+    //getRelatedByQueryBuilderMovies()
+    filterSearch();
 });
 
 const goBack = () => {
