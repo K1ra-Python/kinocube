@@ -12,6 +12,19 @@
         <button @click="goBack">Вернуться назад</button>
         <button @click="goToNextMovie">Следующий фильм</button>
     </div>
+    <div>
+        <h2>Выберите жанры:</h2>
+        <div v-for="genre in allGenres" :key="genre">
+            <input type="checkbox" :value="genre" :id="genre" :checked="selectedGenres.includes(genre)"
+                @change="handleGenreChange(genre)" />
+            <label :for="genre">{{ genre }}</label>
+        </div>
+        <button @click="ssearchMovies">Поиск фильмов</button>
+    </div>
+    <div v-if="movieDetails" class="movie-details">
+        <h1>{{ movieDetails.title }}</h1>
+        <!-- И другие детали фильма -->
+    </div>
 </template>
   
 <script setup>
@@ -23,7 +36,8 @@ import {
 import { ref } from 'vue';
 import { onMounted } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
-import { useSelectedGenres} from '~/composables/selectedGenres'
+import { useSelectedGenres } from '~/composables/selectedGenres'
+
 // Здесь ваш клиентский API ключ
 const kp = new KinopoiskDev('Y5W270D-51F4EHG-KW5T65G-H56CJ96');
 const router = useRouter();
@@ -31,12 +45,14 @@ const movieDetails = ref(null);
 const route = useRoute()
 const genres = useSelectedGenres()
 const movies = ref([]);
+const allGenres = ref(['мелодрама', 'драма', 'комедия', 'ужасы', 'фантастика']);
+const { selectedGenres, addOrRemoveGenre } = useSelectedGenres();
 const filterSearch = async () => {
-    const selectedGenres = ['мелодрама', 'ужасы'];
-
     // Кодируем жанры для URL
-    const genreFilters = selectedGenres.map(genre => `genres.name = ${encodeURIComponent(genre)}`).join('&');
-    const url = `https://api.kinopoisk.dev/v1.4/movie?page=1&limit=1&${genreFilters}`;
+    const genreQuery = selectedGenres.value.map(genre => `genres.name=${encodeURIComponent(genre)}`).join('&');
+
+    const url = `https://api.kinopoisk.dev/v1.4/movie?page=1&limit=1&${genreQuery}`;
+
 
     try {
         const response = await fetch(url, {
@@ -45,11 +61,13 @@ const filterSearch = async () => {
                 accept: 'application/json',
                 'X-API-KEY': 'Y5W270D-51F4EHG-KW5T65G-H56CJ96',
             },
+
         });
 
         if (!response.ok) {
             throw new Error(`Ошибка: ${response.status}`);
         }
+
 
         const data = await response.json();
         const { docs, page, limit } = data;
@@ -57,12 +75,28 @@ const filterSearch = async () => {
         console.log(`Страница ${page} из ${limit}`);
         console.log(docs);
         movies.value = docs; // Для Vue 3 Composition API
+        if (docs.length > 0) {
+            const selectedMovie = docs[0]; // выбираем первый фильм в списке, можно изменить логику
+            router.push({ path: `/listMovies/${selectedMovie.id}`, 
+            query: { genres: selectedGenres.value.join(',') } });
 
+        }
     } catch (error) {
         console.error("Произошла ошибка при выполнении запроса: ", error);
     }
 }
+const movieId = route.params.id; // Вытаскиваем ID фильма из URL.
+const genresQueryString = route.query.genres; // Вытаскиваем строку жанров из URL.
+console.log(movieId,genresQueryString);
+function handleGenreChange(genre) {
+    addOrRemoveGenre(genre);
+}
 
+// Функция для выполнения поиска фильмов с выбранными жанрами
+function ssearchMovies() {
+    filterSearch();
+    // здесь ваша логика фильтрации или показа результатов
+}
 
 /*Эта асинхронная функция отвечает за показ первого рандомного фильма, дабы внести разнообразие в подборку для пользователя*/
 const searchMovies = async (movieName) => {
@@ -83,19 +117,36 @@ const searchMovies = async (movieName) => {
         const { docs, page, limit } = data;
         console.log(`Страница ${page} из ${limit}`);
         console.log(docs);
-        moviess.value = docs
+        //moviess.value = docs
     }
 
     // Если будет ошибка, то выведем ее в консоль
     if (error) console.log(error, message);
 };
 
+const getMovieById = async (movieId) => {
+    try {
+        const { data, error, message } = await kp.movie.getById(movieId);
+
+        if (error) {
+            console.log(error, message);
+            return;
+        }
+
+        if (data) {
+            movieDetails.value = data; // Обновляем реактивное состояние фильмом
+            console.log(data);
+        }
+    } catch (error) {
+        console.log('Ошибка получения фильма:', error);
+    }
+};
 onMounted(() => {
     const movieName = decodeURIComponent(route.params.newMovie);
     searchMovies(movieName);
     console.log(movieName);
     //getRelatedByQueryBuilderMovies()
-    filterSearch();
+    //filterSearch();
 });
 
 const goBack = () => {

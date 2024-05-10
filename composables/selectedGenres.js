@@ -2,15 +2,17 @@
 
 import { ref } from 'vue'
 
-// Используем ref для реактивной ссылки на выбранные жанры
-export const selectedGenres = ref([])
+// Установить начальное состояние выбранных жанров
+const selectedGenres = ref([])
 
-// Функция для установки выбранных жанров
-export function setSelectedGenres(genres) {
-  selectedGenres.value = genres
-}
-
-// Функция для получения выбранных жанров
 export function useSelectedGenres() {
-  return selectedGenres
+  function addOrRemoveGenre(genre) {
+    const index = selectedGenres.value.indexOf(genre);
+    if (index === -1) {
+      selectedGenres.value.push(genre);
+    } else {
+      selectedGenres.value.splice(index, 1);
+    }
+  }
+  return { selectedGenres, addOrRemoveGenre }
 }
