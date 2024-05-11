@@ -1,29 +1,52 @@
 <template>
-    <div class="filter">
+    <div class="fullWrapFlex">
+        <div class="movie-details2">
+            <div v-for="movie in movies" :key="movie.id" class="wrapMovie">
+                {{ movie.name }}
+                <img :src="movie.poster" width="100" height="100">
+            </div>
+            <!-- Ваша форма и описание фильма здесь -->
+        </div>
+        <div class="filterGenres">
+            <h2>Выберите жанры:</h2>
+            <div v-for="genre in allGenres" :key="genre">
+                <input type="checkbox" :value="genre" :id="genre" :checked="selectedGenres.includes(genre)"
+                    @change="handleGenreChange(genre)" />
+                <label :for="genre">{{ genre }}</label>
+            </div>
+            <button @click="ssearchMovies">Поиск фильмов</button>
+        </div>
+        <div v-if="movieDetails" class="movie-details">
+            <div class="movePoster">
+                <img :src="movieDetails.poster.url" width="259" height="349">
+            </div>
+            <div class="wrapMovieDetails">
+                <div class="moveDetailsGenre">
+                    <span v-for="(genre, index) in movieDetails.genres" :key="index">
+                        {{ genre.name }}<span v-if="index < movieDetails.genres.length - 1">, </span>
+                    </span>
+                </div>
+                <div class="moveDetailsName">
+                    {{ movieDetails.name }} ({{ movieDetails.year }})
+                </div>
+                <div class="moveDetailsDiscrp">
+                    {{ movieDetails.discription }}
+                </div>
+            </div>
 
-    </div>
-    <div class="movie-details">
-        <h1></h1>
-        <div v-for="movie in movies" :key="movie.id" class="wrapMovie">
-            {{ movie.name }}
-            <img :src="movie.poster.url" width="100" height="100">
+            <!-- И другие детали фильма -->
         </div>
-        <!-- Ваша форма и описание фильма здесь -->
-        <button @click="goBack">Вернуться назад</button>
-        <button @click="goToNextMovie">Следующий фильм</button>
-    </div>
-    <div>
-        <h2>Выберите жанры:</h2>
-        <div v-for="genre in allGenres" :key="genre">
-            <input type="checkbox" :value="genre" :id="genre" :checked="selectedGenres.includes(genre)"
-                @change="handleGenreChange(genre)" />
-            <label :for="genre">{{ genre }}</label>
+        <div class="buttonsGudOrNah">
+            <button @click="filterSearch()">
+                <img src="~/assets/ok.svg">
+            </button>
+            <button>
+                <img src="~/assets/like.svg">
+            </button>
+            <button>
+                <img src="~/assets/notOk.svg">
+            </button>
         </div>
-        <button @click="ssearchMovies">Поиск фильмов</button>
-    </div>
-    <div v-if="movieDetails" class="movie-details">
-        <h1>{{ movieDetails.title }}</h1>
-        <!-- И другие детали фильма -->
     </div>
 </template>
   
@@ -46,14 +69,13 @@ const route = useRoute()
 const genres = useSelectedGenres()
 const movies = ref([]);
 const allGenres = ref(['мелодрама', 'драма', 'комедия', 'ужасы', 'фантастика']);
+const currentMovieIndex = ref(0); // текущий индекс в массиве docs
 const { selectedGenres, addOrRemoveGenre } = useSelectedGenres();
 const filterSearch = async () => {
     // Кодируем жанры для URL
+   
     const genreQuery = selectedGenres.value.map(genre => `genres.name=${encodeURIComponent(genre)}`).join('&');
-
-    const url = `https://api.kinopoisk.dev/v1.4/movie?page=1&limit=1&${genreQuery}`;
-
-
+    const url = `https://api.kinopoisk.dev/v1.4/movie?page=1&limit=10&${genreQuery}`;
     try {
         const response = await fetch(url, {
             method: 'GET',
@@ -61,33 +83,32 @@ const filterSearch = async () => {
                 accept: 'application/json',
                 'X-API-KEY': 'Y5W270D-51F4EHG-KW5T65G-H56CJ96',
             },
-
         });
-
         if (!response.ok) {
             throw new Error(`Ошибка: ${response.status}`);
         }
-
-
         const data = await response.json();
         const { docs, page, limit } = data;
 
         console.log(`Страница ${page} из ${limit}`);
         console.log(docs);
-        movies.value = docs; // Для Vue 3 Composition API
+        //movies.value = docs; // Для Vue 3 Composition API
         if (docs.length > 0) {
-            const selectedMovie = docs[0]; // выбираем первый фильм в списке, можно изменить логику
-            router.push({ path: `/listMovies/${selectedMovie.id}`, 
-            query: { genres: selectedGenres.value.join(',') } });
+            const selectedMovie = movies.value[currentMovieIndex.value];
+            //const selectedMovie = docs[0]; // выбираем первый фильм в списке, можно изменить логику
+            router.push({
+                path: `/listMovies/${selectedMovie.id}`,
+                query: { genres: selectedGenres.value.join(',') }
+            });
 
         }
+        currentMovieIndex.value++;
     } catch (error) {
         console.error("Произошла ошибка при выполнении запроса: ", error);
     }
 }
-const movieId = route.params.id; // Вытаскиваем ID фильма из URL.
 const genresQueryString = route.query.genres; // Вытаскиваем строку жанров из URL.
-console.log(movieId,genresQueryString);
+console.log(genresQueryString);
 function handleGenreChange(genre) {
     addOrRemoveGenre(genre);
 }
@@ -124,9 +145,9 @@ const searchMovies = async (movieName) => {
     if (error) console.log(error, message);
 };
 
-const getMovieById = async (movieId) => {
+const getMovieById = async (movieName) => {
     try {
-        const { data, error, message } = await kp.movie.getById(movieId);
+        const { data, error, message } = await kp.movie.getById(movieName);
 
         if (error) {
             console.log(error, message);
@@ -134,8 +155,10 @@ const getMovieById = async (movieId) => {
         }
 
         if (data) {
+            const { docs, page, limit } = data;
             movieDetails.value = data; // Обновляем реактивное состояние фильмом
             console.log(data);
+            movies.value = docs
         }
     } catch (error) {
         console.log('Ошибка получения фильма:', error);
@@ -144,6 +167,8 @@ const getMovieById = async (movieId) => {
 onMounted(() => {
     const movieName = decodeURIComponent(route.params.newMovie);
     searchMovies(movieName);
+    getMovieById(movieName)
+    //id фильма
     console.log(movieName);
     //getRelatedByQueryBuilderMovies()
     //filterSearch();
@@ -167,4 +192,48 @@ function getNextMovieId() {
     return 'next-movie-id';
 };
 </script>
-  
+<style lang="scss">
+.fullWrapFlex{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin-top: 5%;
+}
+
+.logo{
+    margin-top: -50px;
+}
+
+.glassFrame {
+    width: 973px;
+    height: 809px;
+}
+
+.filterGenres {
+    position: absolute;
+    margin-left: 1000px;
+}
+
+.movie-details {
+    display: flex;
+    gap: 40px;
+    margin-bottom: 30%;
+    .movePoster{
+        margin-left: -80px;
+    }
+    img {
+        border-radius: 20px;
+    }
+}
+
+.buttonsGudOrNah {
+    display: flex;
+    gap: 70px;
+
+    button {
+        background-color: rgb(0, 0, 0, 0);
+        border: none;
+        cursor: pointer;
+    }
+}
+</style>
