@@ -73,9 +73,10 @@ const currentMovieIndex = ref(0); // текущий индекс в массив
 const { selectedGenres, addOrRemoveGenre } = useSelectedGenres();
 const filterSearch = async () => {
     // Кодируем жанры для URL
-   
-    const genreQuery = selectedGenres.value.map(genre => `genres.name=${encodeURIComponent(genre)}`).join('&');
-    const url = `https://api.kinopoisk.dev/v1.4/movie?page=1&limit=10&${genreQuery}`;
+
+    const genreQuery = selectedGenres.value.map(genre => `genre=${encodeURIComponent(genre)}`).join('&');
+    const url = `https://api.kinopoisk.dev/movie?page=1&limit=10&${genreQuery}`;
+
     try {
         const response = await fetch(url, {
             method: 'GET',
@@ -84,28 +85,33 @@ const filterSearch = async () => {
                 'X-API-KEY': 'Y5W270D-51F4EHG-KW5T65G-H56CJ96',
             },
         });
+
         if (!response.ok) {
-            throw new Error(`Ошибка: ${response.status}`);
+            throw new Error(`Ошибка: ${ response.status }`);
         }
+
         const data = await response.json();
         const { docs, page, limit } = data;
 
-        console.log(`Страница ${page} из ${limit}`);
+        console.log(`Страница ${ page } из ${ limit }`);
         console.log(docs);
-        //movies.value = docs; // Для Vue 3 Composition API
-        if (docs.length > 0) {
-            const selectedMovie = movies.value[currentMovieIndex.value];
-            //const selectedMovie = docs[0]; // выбираем первый фильм в списке, можно изменить логику
-            router.push({
-                path: `/listMovies/${selectedMovie.id}`,
-                query: { genres: selectedGenres.value.join(',') }
-            });
 
-        }
+        if (docs.length > 0) {
+            movies.value = docs;
+            const selectedMovie = movies.value[currentMovieIndex.value];
+
+            router.push({
+                path: `/listMovies/${ selectedMovie.id }`,
+                query: { genres: selectedGenres.value.join(',') }
+      });
+
         currentMovieIndex.value++;
-    } catch (error) {
-        console.error("Произошла ошибка при выполнении запроса: ", error);
+    } else {
+        console.log('Фильмы по заданным критериям не найдены');
     }
+} catch (error) {
+    console.error("Произошла ошибка при выполнении запроса: ", error);
+}
 }
 const genresQueryString = route.query.genres; // Вытаскиваем строку жанров из URL.
 console.log(genresQueryString);
@@ -175,14 +181,14 @@ onMounted(() => {
 });
 </script>
 <style lang="scss">
-.fullWrapFlex{
+.fullWrapFlex {
     display: flex;
     flex-direction: column;
     justify-content: center;
     margin-top: 5%;
 }
 
-.logo{
+.logo {
     margin-top: -50px;
 }
 
@@ -200,9 +206,11 @@ onMounted(() => {
     display: flex;
     gap: 40px;
     margin-bottom: 30%;
-    .movePoster{
+
+    .movePoster {
         margin-left: -80px;
     }
+
     img {
         border-radius: 20px;
     }
