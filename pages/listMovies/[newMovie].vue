@@ -173,24 +173,6 @@ onMounted(() => {
     //getRelatedByQueryBuilderMovies()
     //filterSearch();
 });
-
-const goBack = () => {
-    router.back();
-};
-
-const goToNextMovie = () => {
-
-    // Здесь вам нужно будет получить ID следующего фильма
-    // Могут быть разные подходы, в зависимости от вашей бизнес-логики
-    const nextMovieId = getNextMovieId();
-    router.push(`/movies/${nextMovieId}`);
-};
-
-// Допустим, у вас есть функция для получения ID следующего фильма
-function getNextMovieId() {
-    // Вместо заглушки «next-movie-id» укажите логику определения следующего ID фильма
-    return 'next-movie-id';
-};
 </script>
 <style lang="scss">
 .fullWrapFlex{
