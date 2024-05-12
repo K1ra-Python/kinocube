@@ -3,7 +3,7 @@
         <div class="movie-details2">
             <div v-for="movie in movies" :key="movie.id" class="wrapMovie">
                 {{ movie.name }}
-                <img :src="movie.poster" width="100" height="100">
+                <img v-if="movieDetails && movieDetails.poster" :src="movieDetails.poster.url" width="259" height="349">
             </div>
             <!-- Ваша форма и описание фильма здесь -->
         </div>
@@ -18,7 +18,7 @@
         </div>
         <div v-if="movieDetails" class="movie-details">
             <div class="movePoster">
-                <img :src="movieDetails.poster.url" width="259" height="349">
+               <img v-if="movieDetails && movieDetails.poster" :src="movieDetails.poster.url" width="259" height="349">
             </div>
             <div class="wrapMovieDetails">
                 <div class="moveDetailsGenre">
@@ -73,9 +73,9 @@ const currentMovieIndex = ref(0); // текущий индекс в массив
 const { selectedGenres, addOrRemoveGenre } = useSelectedGenres();
 const filterSearch = async () => {
     // Кодируем жанры для URL
-
-    const genreQuery = selectedGenres.value.map(genre => `genre=${encodeURIComponent(genre)}`).join('&');
-    const url = `https://api.kinopoisk.dev/movie?page=1&limit=10&${genreQuery}`;
+    currentMovieIndex.value = 0;
+    const genreFilters = selectedGenres.value.map(genre => `genre.name=${encodeURIComponent(genre)}`).join('&');
+    const url = `https://api.kinopoisk.dev/v1.4/movie?page=10&limit=10&${genreFilters}`;
 
     try {
         const response = await fetch(url, {
@@ -87,31 +87,37 @@ const filterSearch = async () => {
         });
 
         if (!response.ok) {
-            throw new Error(`Ошибка: ${ response.status }`);
+            throw new Error(`Ошибка: ${response.status}`);
         }
 
         const data = await response.json();
         const { docs, page, limit } = data;
 
-        console.log(`Страница ${ page } из ${ limit }`);
+        console.log(`Страница ${page} из ${limit}`);
         console.log(docs);
-
         if (docs.length > 0) {
             movies.value = docs;
-            const selectedMovie = movies.value[currentMovieIndex.value];
-
-            router.push({
-                path: `/listMovies/${ selectedMovie.id }`,
-                query: { genres: selectedGenres.value.join(',') }
-      });
-
-        currentMovieIndex.value++;
-    } else {
-        console.log('Фильмы по заданным критериям не найдены');
+            displayNextMovie(); // Показываем первый фильм в списке
+        } else {
+            console.log('Фильмы по заданным критериям не найдены');
+        }
+    } catch (error) {
+        console.error("Произошла ошибка при выполнении запроса: ", error);
     }
-} catch (error) {
-    console.error("Произошла ошибка при выполнении запроса: ", error);
 }
+function displayNextMovie() {
+    if (currentMovieIndex.value < movies.value.length) {
+        const selectedMovie = movies.value[currentMovieIndex.value];
+        router.push({
+            path: `/listMovies/${selectedMovie.id}`,
+            query: { genres: selectedGenres.value.join(',') },
+        });
+        currentMovieIndex.value++; // Увеличиваем индекс для следующего вызова
+    } else {
+        console.log('Больше фильмов нет');
+        // Сброс индекса, если достигли конца массива
+        currentMovieIndex.value = 0;
+    }
 }
 const genresQueryString = route.query.genres; // Вытаскиваем строку жанров из URL.
 console.log(genresQueryString);
