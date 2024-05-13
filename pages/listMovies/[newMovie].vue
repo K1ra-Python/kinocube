@@ -67,12 +67,13 @@ const genres = useSelectedGenres()
 const allGenres = ref(['мелодрама', 'драма', 'комедия', 'ужасы', 'фантастика']);
 //const currentMovieIndex = ref(0); // текущий индекс в массиве docs
 const { selectedGenres, addOrRemoveGenre } = useSelectedGenres();
-const filterSearch = async () => {
+const currentPage = ref(1);
+const filterSearch = async (page=currentPage.value) => {
     // Кодируем жанры для URL
     console.log(selectedGenres.value)
     currentMovieIndex.value = 0;
     const genreFilters = selectedGenres.value.map(genre => `genres.name=${encodeURIComponent(genre)}`).join('&');
-    const url = `https://api.kinopoisk.dev/v1.4/movie?page=1&limit=10&${genreFilters}`;
+    const url = `https://api.kinopoisk.dev/v1.4/movie?page=${page}&limit=10&${genreFilters}`;
     //https://api.kinopoisk.dev/v1.4/movie?page=1&limit=10&
     //genres.name=%D0%B4%D1%80%D0%B0%D0%BC%D0%B0&genres.name=%D1%83%D0%B6%D0%B0%D1%81%D1%8B&genres.name=%D0%BA%D0%BE%D0%BC%D0%B5%D0%B4%D0%B8%D1%8F
     //http://localhost:3000/listMovies/5581330?genres=%D0%BC%D0%B5%D0%BB%D0%BE%D0%B4%D1%80%D0%B0%D0%BC%D0%B0,%D0%BA%D0%BE%D0%BC%D0%B5%D0%B4%D0%B8%D1%8F
@@ -99,7 +100,7 @@ const filterSearch = async () => {
             movies.value = data.docs;
             currentMovieIndex.value = 0; // Индекс стартует с 0
             console.log(`Фильмы загружены.Всего фильмов: ${ movies.value.length }`);
-            displayNextMovie(); // Перед этим не было инкремента, так что показываем первый фильм
+            //displayNextMovie(); // Перед этим не было инкремента, так что показываем первый фильм
         } else {
             console.log('Фильмы по заданным критериям не найдены');
             movies.value = []; // Явно устанавливаем пустой массив, если нет фильмов
@@ -109,26 +110,32 @@ const filterSearch = async () => {
     }
 }
 //КАККККККК МНЕ БЛЯЯЯЯЯЯЯЯЯЯТЬ ПЕРЕДТЬ В ЭТУ ЕБУЧАЮ ФУНКЦИЮ МАССИВ С ОБХЕКТАМИ КОГДА Я ПЕРЕДАЮ ОН ПИШЕТ АНДЕФАЙНД БЛЯЯЯЯТЬ
-function displayNextMovie() {
+async function displayNextMovie() {
     console.log(`Текущий индекс до увеличения: ${currentMovieIndex.value}`);
     console.log(`Всего фильмов: ${movies.value.length}`);
 
-    // Увеличиваем индекс для следующего фильма
-    currentMovieIndex.value++;
-
-    if (currentMovieIndex.value < movies.value.length) {
+    // Если мы достигли конца списка фильмов, запрашиваем следующую страницу
+    if (currentMovieIndex.value >= movies.value.length - 1) {
+        // Запрашиваем следующую страницу
+        await loadNextPage();
+    } else {
         // Показываем следующий фильм из списка
+        currentMovieIndex.value++;
         const selectedMovie = movies.value[currentMovieIndex.value];
         console.log(`Переходим к фильму с индексом: ${currentMovieIndex.value}, ID: ${selectedMovie.id}`);
         router.push({
             path: `/listMovies/${selectedMovie.id}`,
             query: { genres: selectedGenres.value.join(',') },
         });
-    } else {
-        console.log('Больше фильмов нет');
-        // Сброс индекса, если достигли конца массива
-        currentMovieIndex.value = 0;
     }
+}
+
+async function loadNextPage() {
+    // Увеличиваем номер текущей страницы
+    currentPage.value++;
+
+    // Загружаем новую страницу
+    await filterSearch(currentPage.value);
 }
 const searchMovies = async () => {
     const queryBuilder = new MovieQueryBuilder();
