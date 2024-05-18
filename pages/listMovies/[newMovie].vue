@@ -9,6 +9,12 @@
             </div>
             <button @click="ssearchMovies">Поиск фильмов</button>
         </div>
+        <div v-for="movie in movies" :key="movie.id">
+            {{ movie.name }}
+        </div>
+        <div class="m" v-if="movies">
+            {{ movies.name }}
+        </div>
         <div v-if="movieDetails" class="movie-details">
             <div class="movePoster">
                 <img v-if="movieDetails && movieDetails.poster" :src="movieDetails.poster.url" width="259" height="349">
@@ -68,7 +74,7 @@ const allGenres = ref(['мелодрама', 'драма', 'комедия', 'у
 //const currentMovieIndex = ref(0); // текущий индекс в массиве docs
 const { selectedGenres, addOrRemoveGenre } = useSelectedGenres();
 const currentPage = ref(1);
-const filterSearch = async (page=currentPage.value) => {
+const filterSearch = async (page = currentPage.value) => {
     // Кодируем жанры для URL
     console.log(selectedGenres.value)
     currentMovieIndex.value = 0;
@@ -99,7 +105,7 @@ const filterSearch = async (page=currentPage.value) => {
         if (data && Array.isArray(data.docs)) {
             movies.value = data.docs;
             currentMovieIndex.value = 0; // Индекс стартует с 0
-            console.log(`Фильмы загружены.Всего фильмов: ${ movies.value.length }`);
+            console.log(`Фильмы загружены.Всего фильмов: ${movies.value.length}`);
             //displayNextMovie(); // Перед этим не было инкремента, так что показываем первый фильм
         } else {
             console.log('Фильмы по заданным критериям не найдены');
@@ -193,6 +199,7 @@ const getMovieById = async (movieId) => {
     }
 };
 onMounted(() => {
+    //ssearchMovies();
     // Получаем идентификатор фильма из параметров маршрута
     const movieId = decodeURIComponent(route.params.newMovie);
     if (movieId) {
@@ -201,6 +208,8 @@ onMounted(() => {
     } else {
         console.error("Не удалось получить идентификатор фильма из параметров маршрута");
     }
+    //ssearchMovies();
+    
 });
 </script>
 <style lang="scss">
@@ -209,7 +218,7 @@ onMounted(() => {
     flex-direction: column;
     justify-content: center;
     margin-top: 5%;
-    color:white;
+    color: white;
 }
 
 .logo {
