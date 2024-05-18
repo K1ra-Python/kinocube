@@ -9,12 +9,14 @@
             </div>
             <button @click="ssearchMovies">Поиск фильмов</button>
         </div>
+        <!--
         <div v-for="movie in movies" :key="movie.id">
             {{ movie.name }}
         </div>
         <div class="m" v-if="movies">
             {{ movies.name }}
         </div>
+    -->
         <div v-if="movieDetails" class="movie-details">
             <div class="movePoster">
                 <img v-if="movieDetails && movieDetails.poster" :src="movieDetails.poster.url" width="259" height="349">
@@ -79,7 +81,8 @@ const filterSearch = async (page = currentPage.value) => {
     console.log(selectedGenres.value)
     currentMovieIndex.value = 0;
     const genreFilters = selectedGenres.value.map(genre => `genres.name=${encodeURIComponent(genre)}`).join('&');
-    const url = `https://api.kinopoisk.dev/v1.4/movie?page=${page}&limit=10&${genreFilters}`;
+    const url = `https://api.kinopoisk.dev/v1.4/movie?page=${page}&limit=10&notNullFields=names.name&notNullFields=description&notNullFields=slogan&notNullFields=poster.url&notNullFields=year&status=completed&${genreFilters}`;
+
     //https://api.kinopoisk.dev/v1.4/movie?page=1&limit=10&
     //genres.name=%D0%B4%D1%80%D0%B0%D0%BC%D0%B0&genres.name=%D1%83%D0%B6%D0%B0%D1%81%D1%8B&genres.name=%D0%BA%D0%BE%D0%BC%D0%B5%D0%B4%D0%B8%D1%8F
     //http://localhost:3000/listMovies/5581330?genres=%D0%BC%D0%B5%D0%BB%D0%BE%D0%B4%D1%80%D0%B0%D0%BC%D0%B0,%D0%BA%D0%BE%D0%BC%D0%B5%D0%B4%D0%B8%D1%8F
