@@ -9,14 +9,6 @@
             </div>
             <button @click="ssearchMovies">Поиск фильмов</button>
         </div>
-        <!--
-        <div v-for="movie in movies" :key="movie.id">
-            {{ movie.name }}
-        </div>
-        <div class="m" v-if="movies">
-            {{ movies.name }}
-        </div>
-    -->
         <div v-if="movieDetails" class="movie-details">
             <div class="movePoster">
                 <img v-if="movieDetails && movieDetails.poster" :src="movieDetails.poster.url" width="259" height="349">
@@ -73,7 +65,7 @@ const movieDetails = ref(null);
 const route = useRoute()
 const genres = useSelectedGenres()
 //const movies = ref([]);
-const allGenres = ref(['мелодрама', 'драма', 'комедия', 'ужасы', 'фантастика']);
+const allGenres = ref(['мелодрама', 'драма', 'комедия', 'ужасы', 'фантастика','криминал','вестерн']);
 //const currentMovieIndex = ref(0); // текущий индекс в массиве docs
 const { selectedGenres, addOrRemoveGenre } = useSelectedGenres();
 const currentPage = ref(1);
