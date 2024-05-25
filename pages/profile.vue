@@ -42,7 +42,7 @@
   <div class="wrapMovie">
 
 
-    <button class="goToSearch"  v-if="movies.length" @click="goToMovieDetails(movies[0].name)">
+    <button class="goToSearch"  v-if="movies.length" @click="goToMovieDetails(movies[0].id)">
       К поиску
     </button>
   </div>

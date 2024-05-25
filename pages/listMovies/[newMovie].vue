@@ -63,6 +63,7 @@ import { onMounted } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
 import { useSelectedGenres } from '~/composables/selectedGenres'
 import { useState } from '#app';
+import { watch } from 'vue';
 // Здесь ваш клиентский API ключ
 const movies = useState('movies', () => []);
 const currentMovieIndex = useState('currentMovieIndex', () => 0);
@@ -81,11 +82,7 @@ const filterSearch = async (page = currentPage.value) => {
     console.log(selectedGenres.value)
     currentMovieIndex.value = 0;
     const genreFilters = selectedGenres.value.map(genre => `genres.name=${encodeURIComponent(genre)}`).join('&');
-    const url = `https://api.kinopoisk.dev/v1.4/movie?page=${page}&limit=10&notNullFields=names.name&notNullFields=description&notNullFields=slogan&notNullFields=poster.url&notNullFields=year&status=completed&${genreFilters}`;
-
-    //https://api.kinopoisk.dev/v1.4/movie?page=1&limit=10&
-    //genres.name=%D0%B4%D1%80%D0%B0%D0%BC%D0%B0&genres.name=%D1%83%D0%B6%D0%B0%D1%81%D1%8B&genres.name=%D0%BA%D0%BE%D0%BC%D0%B5%D0%B4%D0%B8%D1%8F
-    //http://localhost:3000/listMovies/5581330?genres=%D0%BC%D0%B5%D0%BB%D0%BE%D0%B4%D1%80%D0%B0%D0%BC%D0%B0,%D0%BA%D0%BE%D0%BC%D0%B5%D0%B4%D0%B8%D1%8F
+    const url = `https://api.kinopoisk.dev/v1.4/movie?page=${page}&limit=250&notNullFields=names.name&notNullFields=description&notNullFields=slogan&notNullFields=poster.url&notNullFields=year&status=completed&${genreFilters}`;
 
     try {
         const response = await fetch(url, {
@@ -109,7 +106,7 @@ const filterSearch = async (page = currentPage.value) => {
             movies.value = data.docs;
             currentMovieIndex.value = 0; // Индекс стартует с 0
             console.log(`Фильмы загружены.Всего фильмов: ${movies.value.length}`);
-            //displayNextMovie(); // Перед этим не было инкремента, так что показываем первый фильм
+            displayNextMovie(); // Перед этим не было инкремента, так что показываем первый фильм
         } else {
             console.log('Фильмы по заданным критериям не найдены');
             movies.value = []; // Явно устанавливаем пустой массив, если нет фильмов
@@ -118,7 +115,7 @@ const filterSearch = async (page = currentPage.value) => {
         console.error("Произошла ошибка при выполнении запроса: ", error);
     }
 }
-//КАККККККК МНЕ БЛЯЯЯЯЯЯЯЯЯЯТЬ ПЕРЕДТЬ В ЭТУ ЕБУЧАЮ ФУНКЦИЮ МАССИВ С ОБХЕКТАМИ КОГДА Я ПЕРЕДАЮ ОН ПИШЕТ АНДЕФАЙНД БЛЯЯЯЯТЬ
+
 async function displayNextMovie() {
     console.log(`Текущий индекс до увеличения: ${currentMovieIndex.value}`);
     console.log(`Всего фильмов: ${movies.value.length}`);
@@ -142,32 +139,10 @@ async function displayNextMovie() {
 async function loadNextPage() {
     // Увеличиваем номер текущей страницы
     currentPage.value++;
-
     // Загружаем новую страницу
     await filterSearch(currentPage.value);
 }
-const searchMovies = async () => {
-    const queryBuilder = new MovieQueryBuilder();
-    // Создаем запрос для поиска фильмов по подходящих под наш запрос
-    const query = queryBuilder
-        // Указываем что хотим получить фильм под названием Аватар вышедший в 2022
-        .query('Аватар 2022')
-        // Добавляем пагинацию и получаем 1 страницу по с 10 фильмами на странице
-        .paginate(1, 10)
-        // Собираем запрос
-        .build();
 
-    const { data, error, message } = await kp.movie.getBySearchQuery(query);
-
-    if (data) {
-        const { docs, page, limit } = data;
-        console.log(`Страница ${page} из ${limit}`);
-        console.log(docs);
-    }
-
-    // Если будет ошибка, то выведем ее в консоль
-    if (error) console.log(error, message);
-};
 
 const genresQueryString = route.query.genres; // Вытаскиваем строку жанров из URL.
 console.log(genresQueryString);
@@ -201,6 +176,15 @@ const getMovieById = async (movieId) => {
         console.error("Непредвиденная ошибка при получении фильма:", error);
     }
 };
+/*
+watch(() => route.params.newMovie, (newMovieId, oldMovieId) => {
+      if (newMovieId !== oldMovieId) {
+        // Вызываем функцию, например, для загрузки новых данных фильма,
+        // основываясь на новом значении параметра маршрута
+        getMovieById(newMovieId);
+        displayNextMovie();
+      }
+    });*/
 onMounted(() => {
     //ssearchMovies();
     // Получаем идентификатор фильма из параметров маршрута
@@ -208,12 +192,14 @@ onMounted(() => {
     if (movieId) {
         // Вызов функции с правильным идентификатором
         getMovieById(movieId);
+
     } else {
         console.error("Не удалось получить идентификатор фильма из параметров маршрута");
     }
     //ssearchMovies();
     
 });
+
 </script>
 <style lang="scss">
 .fullWrapFlex {
