@@ -9,6 +9,12 @@
             </div>
             <button @click="ssearchMovies">Поиск фильмов</button>
         </div>
+        <div class="filterCountries">
+            <h2>Выберите страну:</h2>
+            <select v-model="selectedCountry">
+              <option v-for="country in allCountries" :key="country" :value="country">{{ country }}</option>
+            </select>
+          </div>
         <div v-if="movieDetails" class="movie-details">
             <div class="movePoster">
                 <img v-if="movieDetails && movieDetails.poster" :src="movieDetails.poster.url" width="259" height="349">
@@ -64,9 +70,9 @@ const router = useRouter();
 const movieDetails = ref(null);
 const route = useRoute()
 const genres = useSelectedGenres()
-//const movies = ref([]);
+const selectedCountry = ref(''); // Выбранная страна
+const allCountries = ref(['США', 'Франция', 'Германия', 'Япония']); // Доступные страны
 const allGenres = ref(['мелодрама', 'драма', 'комедия', 'ужасы', 'фантастика','криминал','вестерн']);
-//const currentMovieIndex = ref(0); // текущий индекс в массиве docs
 const { selectedGenres, addOrRemoveGenre } = useSelectedGenres();
 const currentPage = ref(1);
 const filterSearch = async (page = currentPage.value) => {
@@ -74,7 +80,7 @@ const filterSearch = async (page = currentPage.value) => {
     console.log(selectedGenres.value)
     currentMovieIndex.value = 0;
     const genreFilters = selectedGenres.value.map(genre => `genres.name=${encodeURIComponent(genre)}`).join('&');
-    const url = `https://api.kinopoisk.dev/v1.4/movie?page=${page}&limit=250&notNullFields=names.name&notNullFields=description&notNullFields=slogan&notNullFields=poster.url&notNullFields=year&status=completed&${genreFilters}`;
+    const url = `https://api.kinopoisk.dev/v1.4/movie?page=${page}&limit=250&notNullFields=names.name&notNullFields=description&notNullFields=slogan&notNullFields=poster.url&notNullFields=year&status=completed&${genreFilters}&countries.name=${encodeURIComponent(selectedCountry.value)}&`;
 
     try {
         const response = await fetch(url, {
