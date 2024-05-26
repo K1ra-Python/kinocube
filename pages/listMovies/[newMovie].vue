@@ -79,7 +79,7 @@ const currentPage = ref(1);
 const resetFilters = () => {
  
   selectedCountry.value = ''; // Сбрасываем выбранную страну
- 
+  selectedGenres.value =[];
 
   filterSearch(); // Выполнить новый поиск с обновленными параметрами
 };
@@ -90,7 +90,10 @@ const filterSearch = async (page = currentPage.value) => {
     const countryFilter = selectedCountry.value
       ? `&countries.name=${encodeURIComponent(selectedCountry.value)}`
       : '';
-    const genreFilters = selectedGenres.value.map(genre => `genres.name=${encodeURIComponent(genre)}`).join('&');
+      const genreFilters = selectedGenres.value.length > 0
+      ? `&genres.name=${selectedGenres.value.map(encodeURIComponent).join('&')}`
+      : '';
+    //const genreFilters = selectedGenres.value.map(genre => `genres.name=${encodeURIComponent(genre)}`).join('&');
     const url = `https://api.kinopoisk.dev/v1.4/movie?page=${page}&limit=250&notNullFields=names.name&notNullFields=description&notNullFields=slogan&notNullFields=poster.url&notNullFields=year&status=completed&${genreFilters}&${countryFilter}`;
 
     try {
