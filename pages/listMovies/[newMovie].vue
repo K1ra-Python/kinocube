@@ -15,6 +15,7 @@
               <option v-for="country in allCountries" :key="country" :value="country">{{ country }}</option>
             </select>
           </div>
+          <button @click="resetFilters">Сбросить фильтры</button>
         <div v-if="movieDetails" class="movie-details">
             <div class="movePoster">
                 <img v-if="movieDetails && movieDetails.poster" :src="movieDetails.poster.url" width="259" height="349">
@@ -75,12 +76,22 @@ const allCountries = ref(['США', 'Франция', 'Германия', 'Яп�
 const allGenres = ref(['мелодрама', 'драма', 'комедия', 'ужасы', 'фантастика','криминал','вестерн']);
 const { selectedGenres, addOrRemoveGenre } = useSelectedGenres();
 const currentPage = ref(1);
+const resetFilters = () => {
+ 
+  selectedCountry.value = ''; // Сбрасываем выбранную страну
+ 
+
+  filterSearch(); // Выполнить новый поиск с обновленными параметрами
+};
 const filterSearch = async (page = currentPage.value) => {
     // Кодируем жанры для URL
     console.log(selectedGenres.value)
     currentMovieIndex.value = 0;
+    const countryFilter = selectedCountry.value
+      ? `&countries.name=${encodeURIComponent(selectedCountry.value)}`
+      : '';
     const genreFilters = selectedGenres.value.map(genre => `genres.name=${encodeURIComponent(genre)}`).join('&');
-    const url = `https://api.kinopoisk.dev/v1.4/movie?page=${page}&limit=250&notNullFields=names.name&notNullFields=description&notNullFields=slogan&notNullFields=poster.url&notNullFields=year&status=completed&${genreFilters}&countries.name=${encodeURIComponent(selectedCountry.value)}&`;
+    const url = `https://api.kinopoisk.dev/v1.4/movie?page=${page}&limit=250&notNullFields=names.name&notNullFields=description&notNullFields=slogan&notNullFields=poster.url&notNullFields=year&status=completed&${genreFilters}&${countryFilter}`;
 
     try {
         const response = await fetch(url, {
