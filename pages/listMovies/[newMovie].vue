@@ -1,21 +1,34 @@
 <template>
-    <div class="fullWrapFlex">
-        <div class="filterGenres">
-            <h2>Выберите жанры:</h2>
-            <div v-for="genre in allGenres" :key="genre">
-                <input type="checkbox" :value="genre" :id="genre" :checked="selectedGenres.includes(genre)"
-                    @change="handleGenreChange(genre)" />
-                <label :for="genre">{{ genre }}</label>
-            </div>
-            <button @click="ssearchMovies">Поиск фильмов</button>
+    <div class="reser_or_show_filters">
+        <div class="show_filters" >
+            <button @click="showFiltres" :style="{ background: activeBgColor, color: activeColor}">Показать фильтры</button>
         </div>
-        <div class="filterCountries">
-            <h2>Выберите страну:</h2>
-            <select v-model="selectedCountry">
-              <option v-for="country in allCountries" :key="country" :value="country">{{ country }}</option>
-            </select>
-          </div>
-          <button @click="resetFilters">Сбросить фильтры</button>
+        <div class="button_reset_filtres">
+            <button @click="resetFilters">Сбросить фильтры</button>
+        </div>
+    </div>
+    <div class="fullWrapFlex">
+       
+
+        <div class="genres_box" v-show="isFiltres == true">
+            <div class="filterGenres">
+                <h2>Выберите жанры:</h2>
+                <div v-for="genre in allGenres" :key="genre">
+                    <input type="checkbox" :value="genre" :id="genre" :checked="selectedGenres.includes(genre)"
+                        @change="handleGenreChange(genre)" />
+                    <label :for="genre">{{ genre }}</label>
+                </div>
+
+            </div>
+            <div class="filterCountries">
+                <h2>Выберите страну:</h2>
+                <select v-model="selectedCountry">
+                    <option v-for="country in allCountries" :key="country" :value="country">{{ country }}</option>
+                </select>
+            </div>
+            <button @click="ssearchMovies">Применить фильтры</button>
+        </div>
+
         <div v-if="movieDetails" class="movie-details">
             <div class="movePoster">
                 <img v-if="movieDetails && movieDetails.poster" :src="movieDetails.poster.url" width="259" height="349">
@@ -27,8 +40,13 @@
                     </span>
                 </div>
                 <div class="moveDetailsName">
-                    {{ movieDetails.name }} ({{ movieDetails.year }})
-                    {{ movieDetails.alternativeName }}
+                    <div class="name_and_year">
+                        {{ movieDetails.name }} ({{ movieDetails.year }})
+                    </div>
+                    <div class="alt_name">
+                        {{ movieDetails.alternativeName }}
+                    </div>
+
                 </div>
                 <div class="moveDetailsDiscrp">
                     {{ movieDetails.discription }}
@@ -69,30 +87,33 @@ const currentMovieIndex = useState('currentMovieIndex', () => 0);
 const kp = new KinopoiskDev('Y5W270D-51F4EHG-KW5T65G-H56CJ96');
 const router = useRouter();
 const movieDetails = ref(null);
-const route = useRoute()
-const genres = useSelectedGenres()
+const route = useRoute();
+const genres = useSelectedGenres();
 const selectedCountry = ref(''); // Выбранная страна
 const allCountries = ref(['США', 'Франция', 'Германия', 'Япония']); // Доступные страны
-const allGenres = ref(['мелодрама', 'драма', 'комедия', 'ужасы', 'фантастика','криминал','вестерн']);
+const allGenres = ref(['мелодрама', 'драма', 'комедия', 'ужасы', 'фантастика', 'криминал', 'вестерн']);
 const { selectedGenres, addOrRemoveGenre } = useSelectedGenres();
 const currentPage = ref(1);
+const isFiltres = ref(false);
+const activeBgColor = ref('');
+const activeColor = ref('');
 const resetFilters = () => {
- 
-  selectedCountry.value = ''; // Сбрасываем выбранную страну
-  selectedGenres.value =[];
 
-  filterSearch(); // Выполнить новый поиск с обновленными параметрами
+    selectedCountry.value = ''; // Сбрасываем выбранную страну
+    selectedGenres.value = [];
+
+    filterSearch(); // Выполнить новый поиск с обновленными параметрами
 };
 const filterSearch = async (page = currentPage.value) => {
     // Кодируем жанры для URL
     console.log(selectedGenres.value)
     currentMovieIndex.value = 0;
     const countryFilter = selectedCountry.value
-      ? `&countries.name=${encodeURIComponent(selectedCountry.value)}`
-      : '';
-      const genreFilters = selectedGenres.value.length > 0
-      ? `&genres.name=${selectedGenres.value.map(encodeURIComponent).join('&')}`
-      : '';
+        ? `&countries.name=${encodeURIComponent(selectedCountry.value)}`
+        : '';
+    const genreFilters = selectedGenres.value.length > 0
+        ? `&genres.name=${selectedGenres.value.map(encodeURIComponent).join('&')}`
+        : '';
     //const genreFilters = selectedGenres.value.map(genre => `genres.name=${encodeURIComponent(genre)}`).join('&');
     const url = `https://api.kinopoisk.dev/v1.4/movie?page=${page}&limit=250&notNullFields=names.name&notNullFields=description&notNullFields=slogan&notNullFields=poster.url&notNullFields=year&status=completed&${genreFilters}&${countryFilter}`;
 
@@ -127,7 +148,6 @@ const filterSearch = async (page = currentPage.value) => {
         console.error("Произошла ошибка при выполнении запроса: ", error);
     }
 }
-
 async function displayNextMovie() {
     console.log(`Текущий индекс до увеличения: ${currentMovieIndex.value}`);
     console.log(`Всего фильмов: ${movies.value.length}`);
@@ -147,30 +167,24 @@ async function displayNextMovie() {
         });
     }
 }
-
 async function loadNextPage() {
     // Увеличиваем номер текущей страницы
     currentPage.value++;
     // Загружаем новую страницу
     await filterSearch(currentPage.value);
 }
-
-
 const genresQueryString = route.query.genres; // Вытаскиваем строку жанров из URL.
 console.log(genresQueryString);
 function handleGenreChange(genre) {
     addOrRemoveGenre(genre);
 }
-
 // Функция для выполнения поиска фильмов с выбранными жанрами
 function ssearchMovies() {
     currentMovieIndex.value = -1
     filterSearch();
     // здесь ваша логика фильтрации или показа результатов
 }
-
 /*Эта асинхронная функция отвечает за показ первого рандомного фильма, дабы внести разнообразие в подборку для пользователя*/
-
 const getMovieById = async (movieId) => {
     try {
         const { data, error, message } = await kp.movie.getById(movieId);
@@ -188,15 +202,11 @@ const getMovieById = async (movieId) => {
         console.error("Непредвиденная ошибка при получении фильма:", error);
     }
 };
-/*
-watch(() => route.params.newMovie, (newMovieId, oldMovieId) => {
-      if (newMovieId !== oldMovieId) {
-        // Вызываем функцию, например, для загрузки новых данных фильма,
-        // основываясь на новом значении параметра маршрута
-        getMovieById(newMovieId);
-        displayNextMovie();
-      }
-    });*/
+const showFiltres = () => {
+    isFiltres.value = !isFiltres.value;
+    activeBgColor.value = activeBgColor.value === 'rgba(255, 255, 255, 0.5)' ? '': 'rgba(255, 255, 255, 0.5)';
+    activeColor.value = activeColor.value === 'black' ? '': 'black';
+}
 onMounted(() => {
     //ssearchMovies();
     // Получаем идентификатор фильма из параметров маршрута
@@ -209,11 +219,23 @@ onMounted(() => {
         console.error("Не удалось получить идентификатор фильма из параметров маршрута");
     }
     //ssearchMovies();
-    
+
 });
 
 </script>
 <style lang="scss">
+@mixin buttonFilterOffOn {
+    cursor: pointer;
+    border: none;
+    border: 0.24px solid rgba(0, 0, 0, 0.1);
+    border-radius: 0 9px 9px 0;
+    width: 120px;
+    height: 120px;
+    color: white;
+    backdrop-filter: blur(4.672276973724365px);
+    background: rgba(0, 0, 0, 0.5);
+}
+
 .fullWrapFlex {
     display: flex;
     flex-direction: column;
@@ -231,15 +253,15 @@ onMounted(() => {
     height: 809px;
 }
 
-.filterGenres {
-    position: absolute;
-    margin-left: 1000px;
-}
-
 .movie-details {
     display: flex;
     gap: 40px;
     margin-bottom: 30%;
+
+    .moveDetailsName {
+        display: flex;
+        flex-direction: column;
+    }
 
     .movePoster {
         margin-left: -80px;
@@ -259,5 +281,43 @@ onMounted(() => {
         border: none;
         cursor: pointer;
     }
+}
+.reser_or_show_filters{
+    margin-left: 113%;
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    gap: 50px;
+}
+.show_filters {
+    
+
+    button {
+        @include buttonFilterOffOn;
+    }
+
+}
+
+.button_reset_filtres {
+   
+ 
+
+    button {
+        @include buttonFilterOffOn;
+    }
+
+}
+
+.genres_box {
+    border: 1px solid rgba(255, 255, 255, 0.44);
+    backdrop-filter: blur(15px);
+    background: rgba(255, 255, 255, 0.12);
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    padding: 10px;
+    width: 500px;
+    gap: 30px;
+
 }
 </style>

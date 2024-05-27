@@ -7,6 +7,7 @@
   
 
 body{
+  font-family: Roboto Mono;
     background-image: url('../bg.png'), linear-gradient(103deg, #161616 6.8%, #3e3c3c 52.27%, #7c7a7a 100%);;
     background-position: center center;
     background-attachment: fixed;

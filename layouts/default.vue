@@ -39,7 +39,7 @@ header {
 .glassFrame {
     border: 1px solid rgba(0, 0, 0, 0.1);
     border-radius: 40px;
-    width: 836px;
+    
     height: 800px;
     backdrop-filter: blur(7px);
     background: rgba(0, 0, 0, 0.1);
