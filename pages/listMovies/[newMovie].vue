@@ -1,15 +1,13 @@
 <template>
     <div class="reser_or_show_filters">
-        <div class="show_filters" >
-            <button @click="showFiltres" :style="{ background: activeBgColor, color: activeColor}">Показать фильтры</button>
+        <div class="show_filters">
+            <button @click="showFiltres" :style="{ background: activeBgColor, color: activeColor }">Показать фильтры</button>
         </div>
         <div class="button_reset_filtres">
             <button @click="resetFilters">Сбросить фильтры</button>
         </div>
     </div>
     <div class="fullWrapFlex">
-       
-
         <div class="genres_box" v-show="isFiltres == true">
             <div class="filterGenres">
                 <h2>Выберите жанры:</h2>
@@ -28,7 +26,6 @@
             </div>
             <button @click="ssearchMovies">Применить фильтры</button>
         </div>
-
         <div v-if="movieDetails" class="movie-details">
             <div class="movePoster">
                 <img v-if="movieDetails && movieDetails.poster" :src="movieDetails.poster.url" width="259" height="349">
@@ -59,7 +56,7 @@
             <button @click="displayNextMovie">
                 <img src="~/assets/ok.svg">
             </button>
-            <button>
+            <button @click="likedTitle">
                 <img src="~/assets/like.svg">
             </button>
             <button>
@@ -75,12 +72,16 @@ import {
     MovieQueryBuilder,
     SPECIAL_VALUE
 } from '@openmoviedb/kinopoiskdev_client';
-import { ref } from 'vue';
+
 import { onMounted } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
 import { useSelectedGenres } from '~/composables/selectedGenres'
 import { useState } from '#app';
-import { watch } from 'vue';
+import { ref } from 'vue';
+import { getAuth } from 'firebase/auth';
+import { getFirestore, doc, updateDoc, arrayUnion } from 'firebase/firestore';
+
+
 // Здесь ваш клиентский API ключ
 const movies = useState('movies', () => []);
 const currentMovieIndex = useState('currentMovieIndex', () => 0);
@@ -97,6 +98,8 @@ const currentPage = ref(1);
 const isFiltres = ref(false);
 const activeBgColor = ref('');
 const activeColor = ref('');
+const auth = getAuth();
+const db = getFirestore();
 const resetFilters = () => {
 
     selectedCountry.value = ''; // Сбрасываем выбранную страну
@@ -204,9 +207,32 @@ const getMovieById = async (movieId) => {
 };
 const showFiltres = () => {
     isFiltres.value = !isFiltres.value;
-    activeBgColor.value = activeBgColor.value === 'rgba(255, 255, 255, 0.5)' ? '': 'rgba(255, 255, 255, 0.5)';
-    activeColor.value = activeColor.value === 'black' ? '': 'black';
+    activeBgColor.value = activeBgColor.value === 'rgba(255, 255, 255, 0.5)' ? '' : 'rgba(255, 255, 255, 0.5)';
+    activeColor.value = activeColor.value === 'black' ? '' : 'black';
 }
+
+const likedTitle = async () => {
+  const movieId = decodeURIComponent(route.params.newMovie);
+  
+  if (!auth.currentUser) {
+    console.error('Пользователь не авторизован');
+    return; // или выполнить перенаправление на страницу входа
+  }
+  
+  const userId = auth.currentUser.uid;
+  const userDocRef = doc(db, 'users', userId);
+  
+  try {
+    // Добавляем movieId в массив 'favorites' в Firestore
+    await updateDoc(userDocRef, {
+      favorites: arrayUnion(movieId)
+    });
+    
+    console.log(`Фильм с ID ${movieId} добавлен в избранное пользователя с ID ${userId}`);
+  } catch (error) {
+    console.error('Ошибка при добавлении фильма в избранное:', error);
+  }
+};
 onMounted(() => {
     //ssearchMovies();
     // Получаем идентификатор фильма из параметров маршрута
@@ -282,15 +308,17 @@ onMounted(() => {
         cursor: pointer;
     }
 }
-.reser_or_show_filters{
+
+.reser_or_show_filters {
     margin-left: 113%;
     position: absolute;
     display: flex;
     flex-direction: column;
     gap: 50px;
 }
+
 .show_filters {
-    
+
 
     button {
         @include buttonFilterOffOn;
@@ -299,8 +327,8 @@ onMounted(() => {
 }
 
 .button_reset_filtres {
-   
- 
+
+
 
     button {
         @include buttonFilterOffOn;
