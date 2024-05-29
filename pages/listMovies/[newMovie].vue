@@ -1,7 +1,8 @@
 <template>
     <div class="reser_or_show_filters">
         <div class="show_filters">
-            <button @click="showFiltres" :style="{ background: activeBgColor, color: activeColor }">Показать фильтры</button>
+            <button @click="showFiltres" :style="{ background: activeBgColor, color: activeColor }">Показать
+                фильтры</button>
         </div>
         <div class="button_reset_filtres">
             <button @click="resetFilters">Сбросить фильтры</button>
@@ -10,11 +11,21 @@
     <div class="fullWrapFlex">
         <div class="genres_box" v-show="isFiltres == true">
             <div class="filterGenres">
+                <svg xmlns="http://www.w3.org/2000/svg" style="display: none">
+                    <symbol id="checkmark" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-miterlimit="10" fill="none" d="M22.9 3.7l-15.2 16.6-6.6-7.1">
+                        </path>
+                    </symbol>
+                </svg>
                 <h2>Выберите жанры:</h2>
-                <div v-for="genre in allGenres" :key="genre">
+                <div v-for="genre in allGenres" :key="genre" class="promoted-checkbox">
                     <input type="checkbox" :value="genre" :id="genre" :checked="selectedGenres.includes(genre)"
-                        @change="handleGenreChange(genre)" />
-                    <label :for="genre">{{ genre }}</label>
+                        class="promoted-input-checkbox" @change="handleGenreChange(genre)" />
+                    <label :for="genre">
+                        <svg>
+                            <use xlink:href="#checkmark" />
+                        </svg>
+                        {{ genre }}</label>
                 </div>
 
             </div>
@@ -24,11 +35,12 @@
                     <option v-for="country in allCountries" :key="country" :value="country">{{ country }}</option>
                 </select>
             </div>
-            <button @click="ssearchMovies">Применить фильтры</button>
+            <button @click="ssearchMovies" class="setFiltres">Применить фильтры</button>
         </div>
         <div v-if="movieDetails" class="movie-details">
             <div class="movePoster">
                 <img v-if="movieDetails && movieDetails.poster" :src="movieDetails.poster.url" width="259" height="349">
+                <img v-if="movieDetails && movieDetails.cover" :src="movieDetails.cover.url" width="259" height="349">
             </div>
             <div class="wrapMovieDetails">
                 <div class="moveDetailsGenre">
@@ -40,17 +52,15 @@
                     <div class="name_and_year">
                         {{ movieDetails.name }} ({{ movieDetails.year }})
                     </div>
-                    <div class="alt_name">
+                    <div class="alt_name" v-if="!movieDetails.name">
                         {{ movieDetails.alternativeName }}
                     </div>
 
                 </div>
-                <div class="moveDetailsDiscrp">
-                    {{ movieDetails.discription }}
+                <div class="moveDetailsDescrp">
+                    {{ movieDetails.description }}
                 </div>
             </div>
-
-            <!-- И другие детали фильма -->
         </div>
         <div class="buttonsGudOrNah">
             <button @click="displayNextMovie">
@@ -58,9 +68,6 @@
             </button>
             <button @click="likedTitle">
                 <img src="~/assets/like.svg">
-            </button>
-            <button>
-                <img src="~/assets/notOk.svg">
             </button>
         </div>
     </div>
@@ -212,26 +219,26 @@ const showFiltres = () => {
 }
 
 const likedTitle = async () => {
-  const movieId = decodeURIComponent(route.params.newMovie);
-  
-  if (!auth.currentUser) {
-    console.error('Пользователь не авторизован');
-    return; // или выполнить перенаправление на страницу входа
-  }
-  
-  const userId = auth.currentUser.uid;
-  const userDocRef = doc(db, 'users', userId);
-  
-  try {
-    // Добавляем movieId в массив 'favorites' в Firestore
-    await updateDoc(userDocRef, {
-      favorites: arrayUnion(movieId)
-    });
-    
-    console.log(`Фильм с ID ${movieId} добавлен в избранное пользователя с ID ${userId}`);
-  } catch (error) {
-    console.error('Ошибка при добавлении фильма в избранное:', error);
-  }
+    const movieId = decodeURIComponent(route.params.newMovie);
+
+    if (!auth.currentUser) {
+        console.error('Пользователь не авторизован');
+        return; // или выполнить перенаправление на страницу входа
+    }
+
+    const userId = auth.currentUser.uid;
+    const userDocRef = doc(db, 'users', userId);
+
+    try {
+        // Добавляем movieId в массив 'favorites' в Firestore
+        await updateDoc(userDocRef, {
+            favorites: arrayUnion(movieId)
+        });
+
+        console.log(`Фильм с ID ${movieId} добавлен в избранное пользователя с ID ${userId}`);
+    } catch (error) {
+        console.error('Ошибка при добавлении фильма в избранное:', error);
+    }
 };
 onMounted(() => {
     //ssearchMovies();
@@ -275,32 +282,59 @@ onMounted(() => {
 }
 
 .glassFrame {
+    padding: 26px 140px;
     width: 973px;
-    height: 809px;
+    height: 909px;
+}
+
+.wrapMovieDetails {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
 }
 
 .movie-details {
     display: flex;
     gap: 40px;
     margin-bottom: 30%;
+    justify-content: center;
+  
 
     .moveDetailsName {
         display: flex;
         flex-direction: column;
     }
 
-    .movePoster {
-        margin-left: -80px;
-    }
+    .movePoster {}
 
     img {
         border-radius: 20px;
+        width: 259px;
+        height: 349px;
+    }
+
+    .moveDetailsGenre {
+        span {
+            font-style: italic;
+            font-weight: 300;
+            font-size: 20px;
+            color: #fff;
+        }
+    }
+
+    .moveDetailsDescrp {
+        font-style: italic;
+        font-weight: 700;
+        font-size: 18px;
+        color: #fff;
+        max-width: 500px;
     }
 }
 
 .buttonsGudOrNah {
     display: flex;
     gap: 70px;
+    justify-content: center;
 
     button {
         background-color: rgb(0, 0, 0, 0);
@@ -346,6 +380,107 @@ onMounted(() => {
     padding: 10px;
     width: 500px;
     gap: 30px;
+    justify-content: center;
 
+
+}
+
+$brand: #161616;
+$grey-25: #161616;
+$grey-5: #161616;
+
+*,
+*:before,
+*:after {
+    box-sizing: border-box;
+}
+
+.form-container {
+    padding: 1rem;
+    margin: 2rem auto;
+    background-color: $grey-5;
+    border: 1px solid $grey-25;
+    width: 50%;
+}
+
+/* HTML5 Boilerplate accessible hidden styles */
+.promoted-input-checkbox {
+    border: 0;
+    clip: rect(0 0 0 0);
+    height: 1px;
+    margin: -1px;
+    overflow: hidden;
+    padding: 0;
+    position: absolute;
+    width: 1px;
+
+}
+
+.promoted-checkbox {
+    padding: 1%;
+
+    input:checked+label>svg {
+        // Firefox doesn't render svg's that is loading with the use tag if its been set to display: none and then toggled to display: block, so you have to use tricks like this to get it to render again:
+        height: 24px;
+        animation: draw-checkbox ease-in-out 0.2s forwards;
+    }
+
+    label:active::after {
+
+        background-color: $grey-25;
+    }
+
+    label {
+        font-weight: 400;
+        font-size: 20px;
+        color: #fff;
+        line-height: 40px;
+        cursor: pointer;
+        position: relative;
+
+        &:after {
+            content: "";
+            height: 40px;
+            width: 40px;
+            margin-right: 1rem;
+            float: left;
+            border: 2px solid $brand;
+            border-radius: 3px;
+            transition: 0.15s all ease-out;
+        }
+    }
+
+    svg {
+        stroke: $brand;
+        stroke-width: 3px;
+        height: 0; //Firefox fix
+        width: 24px;
+        position: absolute;
+        left: -48px;
+        top: -4px;
+        stroke-dasharray: 33; //Firefox fix
+    }
+}
+
+@keyframes draw-checkbox {
+    0% {
+        stroke-dashoffset: 33;
+    }
+
+    100% {
+        stroke-dashoffset: 0;
+    }
+}
+
+.setFiltres {
+    cursor: pointer;
+    border: none;
+    border-radius: 9px 9px 9px 9px;
+    width: 120px;
+    height: 50px;
+    color: white;
+    backdrop-filter: blur(4.672276973724365px);
+    background: rgba(0, 0, 0, 0.5);
+    align-self: center;
 }
 </style>
