@@ -62,6 +62,12 @@
                 </div>
             </div>
         </div>
+        <div v-if="moviesImages.length > 0">
+            <div class="mg" v-for="image in moviesImages.slice(0, 3)" :key="image.id">
+              {{ image.type }}
+              <img :src="image.url" :alt="'Скриншот ' + image.movieId" :width="239" :height="239">
+            </div>
+          </div>
         <div class="buttonsGudOrNah">
             <button @click="displayNextMovie">
                 <img src="~/assets/ok.svg">
@@ -95,6 +101,7 @@ const currentMovieIndex = useState('currentMovieIndex', () => 0);
 const kp = new KinopoiskDev('Y5W270D-51F4EHG-KW5T65G-H56CJ96');
 const router = useRouter();
 const movieDetails = ref(null);
+const moviesImages = ref([])
 const route = useRoute();
 const genres = useSelectedGenres();
 const selectedCountry = ref(''); // Выбранная страна
@@ -154,6 +161,30 @@ const filterSearch = async (page = currentPage.value) => {
             console.log('Фильмы по заданным критериям не найдены');
             movies.value = []; // Явно устанавливаем пустой массив, если нет фильмов
         }
+    } catch (error) {
+        console.error("Произошла ошибка при выполнении запроса: ", error);
+    }
+}
+const getImg = async () => {
+    // Кодируем жанры для URL
+    const url = `https://api.kinopoisk.dev/v1.4/image?page=1&limit=10&movieId=${435}&type=cover&type=frame&type=screenshot&type=shooting`;
+
+    try {
+        const response = await fetch(url, {
+            method: 'GET',
+            headers: {
+                accept: 'application/json',
+                'X-API-KEY': 'Y5W270D-51F4EHG-KW5T65G-H56CJ96',
+            },
+        });
+
+        if (!response.ok) {
+            throw new Error(`Ошибка: ${response.status}`);
+        }
+
+        const data = await response.json();
+        const { docs, page, limit } = data;
+        moviesImages.value = data.docs;
     } catch (error) {
         console.error("Произошла ошибка при выполнении запроса: ", error);
     }
@@ -247,6 +278,7 @@ onMounted(() => {
     if (movieId) {
         // Вызов функции с правильным идентификатором
         getMovieById(movieId);
+        getImg(movieId);
 
     } else {
         console.error("Не удалось получить идентификатор фильма из параметров маршрута");

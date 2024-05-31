@@ -1,6 +1,6 @@
 <template>
     <div class="btn">
-        <button>Войти в Аккаунт</button>
+        <NuxtLink to="authorization">Войти в Аккаунт</NuxtLink>
     </div>
 </template>
 <style lang="scss">
