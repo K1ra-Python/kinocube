@@ -63,11 +63,22 @@
             </div>
         </div>
         <div v-if="moviesImages.length > 0">
-            <div class="mg" v-for="image in moviesImages.slice(0, 3)" :key="image.id">
-              {{ image.type }}
-              <img :src="image.url" :alt="'Скриншот ' + image.movieId" :width="239" :height="239">
+            <!-- Здесь используем v-for для создания отдельных slides, а не группы в одном -->
+            <div v-for="image in moviesImages.filter(img => img.type === 'frame').slice(0, 1)" :key="image.id">
+                <div class="mg">
+                    {{ image.type }}
+                    <img :src="image.url" :alt="'Скриншот ' + image.movieId" :width="239" :height="239">
+                </div>
             </div>
-          </div>
+            <!-- То же самое для другого типа изображений -->
+            <div v-for="image in moviesImages.filter(img => img.type === 'cover').slice(0, 1)" :key="image.id">
+                <div class="mg">
+                    {{ image.type }}
+                    <img :src="image.url" :alt="'Frame ' + image.movieId" :width="239" :height="239">
+                </div>
+            </div>
+        </div>
+
         <div class="buttonsGudOrNah">
             <button @click="displayNextMovie">
                 <img src="~/assets/ok.svg">
@@ -165,9 +176,9 @@ const filterSearch = async (page = currentPage.value) => {
         console.error("Произошла ошибка при выполнении запроса: ", error);
     }
 }
-const getImg = async () => {
+const getImg = async (movieId) => {
     // Кодируем жанры для URL
-    const url = `https://api.kinopoisk.dev/v1.4/image?page=1&limit=10&movieId=${435}&type=cover&type=frame&type=screenshot&type=shooting`;
+    const url = `https://api.kinopoisk.dev/v1.4/image?page=1&limit=10&movieId=${movieId}&type=cover&type=frame&type=screenshot&type=shooting`;
 
     try {
         const response = await fetch(url, {
@@ -330,7 +341,7 @@ onMounted(() => {
     gap: 40px;
     margin-bottom: 30%;
     justify-content: center;
-  
+
 
     .moveDetailsName {
         display: flex;
