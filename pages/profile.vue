@@ -35,7 +35,7 @@
     <div class="wrapus">
       <changeGeners></changeGeners>
       
-      <NuxtLink to="liked"><liked></liked></NuxtLink>
+      <NuxtLink to="favs"><liked></liked></NuxtLink>
       <history></history>
     </div>
     <!-- Другие элементы интерфейса пользователя -->
