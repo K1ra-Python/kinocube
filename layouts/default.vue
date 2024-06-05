@@ -41,8 +41,8 @@ header {
     border-radius: 40px;
     width: 100%;
     height: 100%;
-    backdrop-filter: blur(7px);
-    background: rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(5px);
+    background: rgba(0, 0, 0, 0.8);
 
 }
 .cen{

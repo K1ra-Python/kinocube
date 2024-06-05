@@ -145,7 +145,7 @@ body {
 
     .glassFrame {
       width: 100%;
-      height: 922px;
+      height: 100%;
       border-radius: 0;
     }
   }
