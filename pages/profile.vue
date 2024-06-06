@@ -41,8 +41,6 @@
     <!-- Другие элементы интерфейса пользователя -->
   </div>
   <div class="wrapMovie">
-
-
     <button class="goToSearch"  v-if="movies.length" @click="goToMovieDetails(movies[0].id)">
       К поиску
     </button>
@@ -177,5 +175,17 @@ const goToMovieDetails = (movieName) => {
   display: flex;
   flex-direction: column;
   gap: 40px;
+}
+.goToSearch{
+    border: 3px solid #fff;
+    border-radius: 10px;
+    width: 200px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: row;
+    gap: 10px;
+
 }
 </style>
