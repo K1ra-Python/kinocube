@@ -135,21 +135,7 @@ onMounted(async () => {
 });
 </script>
 <style lang="scss">
-body {
-  margin: 0;
-  padding: 0;
 
-  .wrap {
-    margin-top: 0%;
-    height: 100%;
-
-    .glassFrame {
-      width: 100%;
-      height: 100%;
-      border-radius: 0;
-    }
-  }
-}
 
 .content {
   display: flex;
@@ -158,6 +144,7 @@ body {
   align-items: center;
   gap: 40px;
   margin-top: 5%;
+ 
 
 }
 
@@ -197,7 +184,10 @@ body {
 
 .cards {
   display: flex;
-  gap: 15px;
+  justify-content: center;
+  gap: 45px;
+  flex-wrap: wrap;
+  width: 50%;
 }
 
 .centerContent {

@@ -64,7 +64,7 @@
             </div>
           </div>
           <div class="aboutTitle">
-            <div class="more"><span>Подробней о</span>  
+            <div class="more"><span>Подробней о</span>
               <div v-if="movieDetail.type == 'tv-series'"> сериале</div>
               <div v-if="movieDetail.type == 'movie'"> фильме</div>
               <div v-if="movieDetail.type == 'cartoon'">мультике</div>
@@ -275,14 +275,9 @@ body {
   background-position: center center;
   background-attachment: local;
   background-repeat: repeat;
-
   .wrap {
     margin-top: 0%;
     height: 100%;
-
-    .glassFrame {
-      border-radius: 0;
-    }
   }
 }
 
@@ -329,12 +324,14 @@ body {
   gap: 120px;
   margin-left: 20%;
 }
-.mStatus{
+
+.mStatus {
   font-size: 25px;
-    color: #fbfbfb;
-    text-shadow: 2px 1px 2px rgb(7, 7, 7);
-    margin-bottom: 2%;
+  color: #fbfbfb;
+  text-shadow: 2px 1px 2px rgb(7, 7, 7);
+  margin-bottom: 2%;
 }
+
 .mDescription {
   display: flex;
 
@@ -358,7 +355,8 @@ body {
     font-size: 35px;
     color: #fff;
     display: flex;
-    span{
+
+    span {
       padding-right: 2%;
     }
   }
@@ -392,18 +390,21 @@ body {
   width: 1000px;
 }
 
-.directorName{
+.directorName {
   width: 1000px;
   display: flex;
 }
-.operatorName{
+
+.operatorName {
   display: flex;
   width: 1000px;
 }
-.editorName{
+
+.editorName {
   width: 1000px;
   display: flex;
 }
+
 .producerName {
   display: flex;
   width: 1000px;
@@ -414,10 +415,11 @@ body {
   width: 1000px;
 }
 
-.actors{
+.actors {
   align-self: flex-start;
   margin-top: 10%;
 }
+
 .inOrder {
   text-shadow: 2px 1px 2px rgb(7, 7, 7);
   margin-bottom: 5%;
@@ -425,31 +427,35 @@ body {
   font-size: 35px;
   color: #fff
 }
-.realActors{
+
+.realActors {
   margin-left: 30%;
   text-shadow: 2px 1px 2px rgb(7, 7, 7);
   display: flex;
   flex-wrap: wrap;
   width: 800px;
-  gap:  10px;
+  gap: 10px;
   font-size: 25px;
   color: #fff;
 }
 
-.Watch{
+.Watch {
   margin-top: 10%;
   margin-left: 10%;
   align-self: flex-start;
 }
-.where{
+
+.where {
   font-size: 35px;
   color: #fff
 }
+
 .mWatch {
   margin-top: 10%;
   margin-left: 10%;
   display: flex;
   gap: 30px;
+
   div {
     display: flex;
     flex-direction: column;
