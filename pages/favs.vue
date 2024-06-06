@@ -101,7 +101,6 @@ const getMovieById = async (favoriteId) => {
 
     if (data) {
       movieDetails.value.push(data); // Добавляем данные о фильме в массив
-      console.log("Подробности фильма с ID " + favoriteId + ":", data);
     }
   } catch (error) {
     console.error("Непредвиденная ошибка при получении фильма с ID " + favoriteId + ":", error);
@@ -116,7 +115,6 @@ onMounted(async () => {
         if (userDocSnap.exists()) {
           userProfile.value = userDocSnap.data();
           userFavorites.value = userProfile.value.favorites || [];
-          console.log(userFavorites.value);
           // Теперь получаем детали фильма после обновления userFavorites
           for (const favoriteId of userFavorites.value) {
             await getMovieById(favoriteId);
