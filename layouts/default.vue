@@ -43,14 +43,16 @@ const prev = async()=>{
     padding: 0;
 }
 
-body,
-height {
+html{
     height: 100%;
-    background-position: center center;
-    background-attachment: local;
-    background-repeat: repeat;
-
+    body {
+        height: 100%;
+        background-position: center center;
+        background-attachment: local;
+        background-repeat: repeat;
+    }
 }
+
 
 header {
     display: flex;
@@ -69,31 +71,24 @@ header {
 }
 
 .wrap {
-    flex: 1;
     display: flex;
     justify-content: center;
     align-items: center;
-    display: flex;
     flex-direction: column;
-    height: 100%;
+    min-height: 100vh;
     width: 100%;
-    flex: 1;
     backdrop-filter: blur(5px);
     background: rgba(0, 0, 0, 0.8);
 }
 
-.glassFrame {
-    // Максимальная ширина всего содержимого, если нужно
 
-
-}
 
 .con {
-    flex: 1 0 auto;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    flex: 1 0 auto;
 }
 
 footer {

@@ -269,17 +269,7 @@ onMounted(async () => {
 });
 </script>
 <style lang="scss">
-body {
-  margin: 0;
-  padding: 0;
-  background-position: center center;
-  background-attachment: local;
-  background-repeat: repeat;
-  .wrap {
-    margin-top: 0%;
-    height: 100%;
-  }
-}
+
 
 .mWrap {
   margin-top: 5%;
