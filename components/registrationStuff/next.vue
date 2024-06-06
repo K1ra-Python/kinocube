@@ -1,12 +1,12 @@
 <template>
     <div class="btnReg">
-        <input class="my-button" name="name" type="submit" value="Дальше"/>
+        <button class="my-button" name="name" type="submit">Продолжить</button>
     </div>
 </template>
 <style lang="scss">
 .btnReg {
     margin-top: 6%;
-    input {
+    button {
         border: 3px solid #fff;
         border-radius: 10px;
         width: 200px;

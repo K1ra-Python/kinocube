@@ -3,8 +3,8 @@
         <textAutho></textAutho>
         <loginAutho @update:email="updateEmail"></loginAutho>
         <passwordAutho @update:password="updateAuthPassword"></passwordAutho>
-        <next></next>
-        <button @click="userLogin">Добавить пользователя</button>
+        <nextAutho @click="userLogin"></nextAutho>
+        <nuxt-link to="registration">Нет Аккаунта? Не проблема, зарегестрируйтесь!</nuxt-link>
     </div>
 </template>
 <script>
@@ -12,7 +12,7 @@ import { defineComponent, ref, reactive } from 'vue';
 import textAutho from '~/components/authorizationStuff/textAutho.vue';
 import passwordAutho from '~/components/authorizationStuff/passwordAutho.vue';
 import loginAutho from '~/components/authorizationStuff/loginAutho.vue';
-import next from '~/components/registrationStuff/next.vue';
+import nextAutho from '~/components/authorizationStuff/nextAutho.vue';
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 import { useVuelidate } from '@vuelidate/core'
 import { required, email } from '@vuelidate/validators'
@@ -97,7 +97,7 @@ export default defineComponent({
         textAutho,
         passwordAutho,
         loginAutho,
-        next
+        nextAutho
     }
 });
 </script>
