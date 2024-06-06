@@ -1,14 +1,14 @@
 <template>
-    <div class="reser_or_show_filters">
-        <div class="show_filters">
-            <button @click="showFiltres" :style="{ background: activeBgColor, color: activeColor }">Показать
-                фильтры</button>
-        </div>
-        <div class="button_reset_filtres">
-            <button @click="resetFilters">Сбросить фильтры</button>
-        </div>
-    </div>
     <div class="fullWrapFlex">
+        <div class="reser_or_show_filters">
+            <div class="show_filters">
+                <button @click="showFiltres" :style="{ background: activeBgColor, color: activeColor }">Показать
+                    фильтры</button>
+            </div>
+            <div class="button_reset_filtres">
+                <button @click="resetFilters">Сбросить фильтры</button>
+            </div>
+        </div>
         <div class="genres_box" v-show="isFiltres == true">
             <div class="filterGenres">
                 <svg xmlns="http://www.w3.org/2000/svg" style="display: none">
@@ -38,38 +38,42 @@
             <button @click="ssearchMovies" class="setFiltres">Применить фильтры</button>
         </div>
         <div v-if="movieDetails" class="movie-details">
-            <div class="movePoster">
-                <img v-if="movieDetails && movieDetails.poster" :src="movieDetails.poster.url" width="259" height="349">
-                <img v-if="movieDetails && movieDetails.cover" :src="movieDetails.cover.url" width="259" height="349">
+            <div class="kinoContent">
+                <div class="movePoster">
+                    <img v-if="movieDetails && movieDetails.poster" :src="movieDetails.poster.url" width="259" height="349">
+                    <img v-if="movieDetails && movieDetails.cover" :src="movieDetails.cover.url" width="259" height="349">
+                </div>
+                <div class="wrapMovieDetails">
+                    <div class="moveDetailsGenre">
+                        <span v-for="(genre, index) in movieDetails.genres" :key="index">
+                            {{ genre.name }}<span v-if="index < movieDetails.genres.length - 1">, </span>
+                        </span>
+                    </div>
+                    <div class="moveDetailsName">
+                        <div class="name_and_year">
+                            {{ movieDetails.name }} ({{ movieDetails.year }})
+                        </div>
+                        <div class="alt_name" v-if="!movieDetails.name">
+                            {{ movieDetails.alternativeName }}
+                        </div>
+    
+                    </div>
+                    <div class="moveDetailsDescrp">
+                        {{ movieDetails.description }}
+                    </div>
+                </div>
             </div>
-            <div class="wrapMovieDetails">
-                <div class="moveDetailsGenre">
-                    <span v-for="(genre, index) in movieDetails.genres" :key="index">
-                        {{ genre.name }}<span v-if="index < movieDetails.genres.length - 1">, </span>
-                    </span>
-                </div>
-                <div class="moveDetailsName">
-                    <div class="name_and_year">
-                        {{ movieDetails.name }} ({{ movieDetails.year }})
-                    </div>
-                    <div class="alt_name" v-if="!movieDetails.name">
-                        {{ movieDetails.alternativeName }}
-                    </div>
-
-                </div>
-                <div class="moveDetailsDescrp">
-                    {{ movieDetails.description }}
-                </div>
+           
+            <div class="buttonsGudOrNah">
+                <button @click="displayNextMovie">
+                    <img src="~/assets/ok.svg">
+                </button>
+                <button @click="likedTitle">
+                    <img src="~/assets/like.svg">
+                </button>
             </div>
         </div>
-        <div class="buttonsGudOrNah">
-            <button @click="displayNextMovie">
-                <img src="~/assets/ok.svg">
-            </button>
-            <button @click="likedTitle">
-                <img src="~/assets/like.svg">
-            </button>
-        </div>
+        
     </div>
 </template>
   
@@ -114,6 +118,15 @@ const resetFilters = () => {
 
     filterSearch(); // Выполнить новый поиск с обновленными параметрами
 };
+function shuffleArray(array) {
+  for (let i = array.length - 1; i > 0; i--) {
+    // Получаем случайный индекс от 0 до i
+    const j = Math.floor(Math.random() * (i + 1));
+    // Меняем местами элемент с индексом i и случайно выбранный элемент с индексом j
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+  return array;
+}
 const filterSearch = async (page = currentPage.value) => {
     // Кодируем жанры для URL
     console.log(selectedGenres.value)
@@ -146,7 +159,7 @@ const filterSearch = async (page = currentPage.value) => {
         console.log(`Страница ${page} из ${limit}`);
         console.log(docs);
         if (data && Array.isArray(data.docs)) {
-            movies.value = data.docs;
+            movies.value = shuffleArray(docs);
             currentMovieIndex.value = 0; // Индекс стартует с 0
             console.log(`Фильмы загружены.Всего фильмов: ${movies.value.length}`);
             displayNextMovie(); // Перед этим не было инкремента, так что показываем первый фильм
@@ -271,7 +284,6 @@ onMounted(() => {
 
 .fullWrapFlex {
     display: flex;
-    flex-direction: column;
     justify-content: center;
     margin-top: 5%;
     color: white;
@@ -295,17 +307,21 @@ onMounted(() => {
 
 .movie-details {
     display: flex;
+    flex-direction: column;
     gap: 40px;
     margin-bottom: 30%;
     justify-content: center;
-  
+    
+    .kinoContent{
+        display: flex;
+        gap: 40px;
+    }
 
     .moveDetailsName {
         display: flex;
         flex-direction: column;
     }
 
-    .movePoster {}
 
     img {
         border-radius: 20px;
@@ -327,7 +343,7 @@ onMounted(() => {
         font-weight: 700;
         font-size: 18px;
         color: #fff;
-        max-width: 500px;
+        max-width: 600px;
     }
 }
 
@@ -344,7 +360,7 @@ onMounted(() => {
 }
 
 .reser_or_show_filters {
-    margin-left: 113%;
+    margin-left: 50%;
     position: absolute;
     display: flex;
     flex-direction: column;
