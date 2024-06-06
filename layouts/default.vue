@@ -7,14 +7,36 @@
             </div>
         </header>
         <div class="con">
+            <button class="button" @click="prev">Обратно</button>
             <slot></slot>
         </div>
         <footer>
             AAAAAAAAAAAA
         </footer>
-
+        <VuePreloader
+        background-color="#091a28"
+        color="#ffffff"
+        transition-type="fade-up"
+        :loading-speed="25"
+        :transition-speed="1400"
+        @loading-is-over="loadingIsOver"
+        @transition-is-over="transitionIsOver"
+      >
+      <span>You are awesome animation goes here</span></VuePreloader>
     </div>
 </template>
+<script setup>
+import { VuePreloader } from 'vue-preloader';
+import '../node_modules/vue-preloader/dist/style.css'
+import { useRoute, useRouter } from 'vue-router';
+import { async } from '@firebase/util';
+const router = useRouter();
+const route = useRoute();
+const prev = async()=>{
+    router.go(-1)
+}
+
+</script>
 <style lang="scss">
 * {
     margin: 0;

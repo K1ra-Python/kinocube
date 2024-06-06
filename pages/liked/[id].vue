@@ -105,40 +105,40 @@
                 <div class="directorName">
                   <span v-for="(persons, index) in movieDetail.persons" :key="index">
                     <div class="mActorN" v-if="persons.profession == 'режиссеры'">
-                      {{ persons.name }}
+                      {{ persons.name }}.
                     </div>
                     <div v-else class="mActorN" v-if="persons.enProfession == 'director'">
-                      {{ persons.enName }}
+                      {{ persons.enName }}.
                     </div>
                   </span>
                 </div>
                 <div class="writerName">
                   <span v-for="(persons, index) in movieDetail.persons" :key="index">
                     <div class="mActorN" v-if="persons.profession == 'редакторы'">
-                      {{ persons.name }},
+                      {{ persons.name }}.
                     </div>
                     <div v-else class="mActorN" v-if="persons.enProfession == 'writer'">
-                      {{ persons.enName }},
+                      {{ persons.enName }}.
                     </div>
                   </span>
                 </div>
                 <div class="producerName">
                   <span v-for="(persons, index) in movieDetail.persons" :key="index">
                     <div class="mActorN" v-if="persons.profession == 'продюсеры'">
-                      {{ persons.name }},
+                      {{ persons.name }}.
                     </div>
                     <div v-else class="mActorN" v-if="persons.enProfession == 'producer'">
-                      {{ persons.enName }},
+                      {{ persons.enName }}.
                     </div>
                   </span>
                 </div>
                 <div class="operatorName">
                   <span v-for="(persons, index) in movieDetail.persons" :key="index">
                     <div class="mActorN" v-if="persons.profession == 'операторы'">
-                      {{ persons.name }}
+                      {{ persons.name }}.
                     </div>
                     <div v-else class="mActorN" v-if="persons.enProfession == 'operator'">
-                      {{ persons.enName }}
+                      {{ persons.enName }}.
                     </div>
                   </span>
                 </div>
@@ -155,20 +155,20 @@
                 <div class="designerName">
                   <span v-for="(persons, index) in movieDetail.persons" :key="index">
                     <div class="mActorN" v-if="persons.profession == 'художники'">
-                      {{ persons.name }},
+                      {{ persons.name }}.
                     </div>
                     <div v-else class="mActorN" v-if="persons.enProfession == 'designer'">
-                      {{ persons.enName }},
+                      {{ persons.enName }}.
                     </div>
                   </span>
                 </div>
                 <div class="editorName">
                   <span v-for="(persons, index) in movieDetail.persons" :key="index">
                     <div class="mActorN" v-if="persons.profession == 'монтажеры'">
-                      {{ persons.name }}
+                      {{ persons.name }}.
                     </div>
                     <div v-else class="mActorN" v-if="persons.enProfession == 'editor'">
-                      {{ persons.enName }}
+                      {{ persons.enName }}.
                     </div>
                   </span>
                 </div>
@@ -387,32 +387,32 @@ body {
 
 .writerName {
   display: flex;
-  width: 1000px;
+  width: 1060px;
 }
 
 .directorName {
-  width: 1000px;
+  width: 1060px;
   display: flex;
 }
 
 .operatorName {
   display: flex;
-  width: 1000px;
+  width: 1060px;
 }
 
 .editorName {
-  width: 1000px;
+  width: 1060px;
   display: flex;
 }
 
 .producerName {
   display: flex;
-  width: 1000px;
+  width: 1060px;
 }
 
 .designerName {
   display: flex;
-  width: 1000px;
+  width: 1060px;
 }
 
 .actors {
@@ -455,6 +455,8 @@ body {
   margin-left: 10%;
   display: flex;
   gap: 30px;
+  flex-wrap: wrap;
+  width: 900px;
 
   div {
     display: flex;
