@@ -33,10 +33,10 @@
       </div>
     </div>
     <div class="wrapus">
-      <changeGeners></changeGeners>
+     
       
       <NuxtLink to="favs"><liked></liked></NuxtLink>
-      <history></history>
+     
     </div>
     <!-- Другие элементы интерфейса пользователя -->
   </div>
@@ -51,9 +51,9 @@
   
 <script setup>
 
-import changeGeners from '~/components/profileStuff/changeGeners.vue';
+
 import liked from '~/components/profileStuff/liked.vue';
-import history from '~/components/profileStuff/history.vue';
+
 import { useRouter } from 'vue-router';
 import { onMounted, ref } from 'vue';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
@@ -82,6 +82,7 @@ onMounted(() => {
         if (userDocSnap.exists()) {
           userProfile.value = userDocSnap.data();
         } else {
+          router.push('/authorization');
           console.error('Нет данных о пользователе')
         }
       } catch (error) {

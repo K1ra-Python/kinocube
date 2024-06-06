@@ -1,27 +1,28 @@
 <template>
     <div class="wrapIndex">
         <textIndex></textIndex>
-        <signGoogle></signGoogle>
-        <signUp></signUp>
-        <signIn></signIn>
+        <signUp @click="routerSignUp">
+        </signUp>
+        <signIn @click="routerSignIn">
+        </signIn>
     </div>
 </template>
-<script>
+<script setup>
 import textIndex from '~/components/indexStuff/textIndex.vue';
-import signGoogle from '~/components/indexStuff/signGoogle.vue';
+
 import signUp from '~/components/indexStuff/signUp.vue';
 import signIn from '~/components/indexStuff/signIn.vue';
-export default {
-    components: {
-        textIndex,
-        signGoogle,
-        signUp,
-        signIn,
-    }
+import { useRouter } from 'vue-router';
+const router = useRouter();
+const routerSignUp = async () => {
+    router.push('registration')
+}
+const routerSignIn = async () => {
+    router.push('authorization')
 }
 </script>
 <style lang="scss">
-.wrapIndex{
+.wrapIndex {
     display: flex;
     flex-direction: column;
     justify-content: center;
