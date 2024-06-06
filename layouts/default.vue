@@ -1,28 +1,23 @@
 <template>
     <div class="wrap">
-
+      
         <header>
             <div class="logo">
                 <img src="~/assets/logo.svg">
             </div>
         </header>
         <div class="con">
+            <button @click="logout">Выйти</button>
             <button class="button" @click="prev">Обратно</button>
             <slot></slot>
         </div>
         <footer>
             AAAAAAAAAAAA
         </footer>
-        <VuePreloader
-        background-color="#091a28"
-        color="#ffffff"
-        transition-type="fade-up"
-        :loading-speed="25"
-        :transition-speed="1400"
-        @loading-is-over="loadingIsOver"
-        @transition-is-over="transitionIsOver"
-      >
-      <span>You are awesome animation goes here</span></VuePreloader>
+        <VuePreloader background-color="#091a28" color="#ffffff" transition-type="fade-up" :loading-speed="25"
+            :transition-speed="1400" @loading-is-over="loadingIsOver" @transition-is-over="transitionIsOver">
+            <span>You are awesome animation goes here</span>
+        </VuePreloader>
     </div>
 </template>
 <script setup>
@@ -30,12 +25,22 @@ import { VuePreloader } from 'vue-preloader';
 import '../node_modules/vue-preloader/dist/style.css'
 import { useRoute, useRouter } from 'vue-router';
 import { async } from '@firebase/util';
+import { signOut } from 'firebase/auth';
+import { getAuth } from 'firebase/auth';
 const router = useRouter();
 const route = useRoute();
-const prev = async()=>{
+const auth = getAuth();
+const prev = async () => {
     router.go(-1)
 }
-
+const logout = async () => {
+    await signOut(auth).then(() => {
+        // Sign-out successful.
+        router.push('/authorization');
+    }).catch((error) => {
+        // An error happened.
+    });
+}
 </script>
 <style lang="scss">
 * {
@@ -43,8 +48,9 @@ const prev = async()=>{
     padding: 0;
 }
 
-html{
+html {
     height: 100%;
+
     body {
         height: 100%;
         background-position: center center;
