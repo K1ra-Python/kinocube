@@ -4,8 +4,7 @@
         <login @update:login="updateLogin"></login>
         <password @update:password="updatePassword"></password>
         <avatarka @update:avatar="updateAvatar"></avatarka>
-        <next></next>
-        <button @click="addUser">Добавить пользователя</button>
+        <next @click="addUser"></next>
     </div>
 </template>
 <script>
@@ -23,7 +22,9 @@ import { addDoc, collection,setDoc,doc } from 'firebase/firestore';
 import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth';
 import { getStorage, ref as storageRef, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { useVuelidate } from '@vuelidate/core'
+import { useRouter } from 'vue-router';
 import { required, email } from '@vuelidate/validators'
+
 export default defineComponent({
     setup() {
         const { $firestore } = useNuxtApp();
@@ -68,6 +69,7 @@ export default defineComponent({
 
         async function addUser() {
             v$.value.$touch();
+            const router = useRouter(); // Инициализируем router
             if (!v$.value.$invalid) {
                 const auth = getAuth()
                 createUserWithEmailAndPassword(auth, state.userData.login, state.userData.password)
@@ -91,7 +93,7 @@ export default defineComponent({
                             password: '',
                             avatarkaUrl: '',
                         };
-
+                        router.push('/authorization'); // Например, /profile
                         console.log('Registered User with avatar:', user.uid);
                     })
 
