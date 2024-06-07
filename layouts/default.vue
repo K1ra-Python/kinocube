@@ -1,13 +1,13 @@
 <template>
     <div class="wrap">
-      
+
         <header>
             <div class="logo">
                 <img src="~/assets/logo.svg">
             </div>
         </header>
         <div class="con">
-            <button @click="logout">Выйти</button>
+            <button class="logout" @click="logout">Выйти</button>
             <button class="button" @click="prev">Обратно</button>
             <slot></slot>
         </div>
@@ -95,6 +95,20 @@ header {
     justify-content: center;
     align-items: center;
     flex: 1 0 auto;
+}
+
+.logout {
+    margin-left: 120px;
+    align-self: flex-end;
+    border: 3px solid #fff;
+    border-radius: 10px;
+    width: 200px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: row;
+    gap: 10px;
 }
 
 footer {
