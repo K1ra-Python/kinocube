@@ -71,6 +71,7 @@
                 <button @click="likedTitle">
                     <img src="~/assets/like.svg">
                 </button>
+                <button class="button" @click="prev">Обратно</button>
             </div>
         </div>
         
@@ -253,6 +254,9 @@ const likedTitle = async () => {
         console.error('Ошибка при добавлении фильма в избранное:', error);
     }
 };
+const prev = async () => {
+    router.go(-1)
+}
 onMounted(() => {
     //ssearchMovies();
     // Получаем идентификатор фильма из параметров маршрута
