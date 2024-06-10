@@ -1,5 +1,6 @@
 <template>
   <div class="wrapProfile">
+    <button class="logout" @click="logout">Выйти</button>
     <div class="imageAndName">
 
 
@@ -61,6 +62,11 @@ import {
   MovieQueryBuilder,
   SPECIAL_VALUE
 } from '@openmoviedb/kinopoiskdev_client';
+import { signOut } from 'firebase/auth';
+
+
+
+const route = useRoute();
 
 
 const db = getFirestore();
@@ -69,7 +75,14 @@ const userProfile = ref(null);
 const router = useRouter();
 const kp = new KinopoiskDev('Y5W270D-51F4EHG-KW5T65G-H56CJ96');
 const movies = ref([]);
-
+const logout = async () => {
+    await signOut(auth).then(() => {
+        // Sign-out successful.
+        router.push('/authorization');
+    }).catch((error) => {
+        // An error happened.
+    });
+}
 onMounted(() => {
   onAuthStateChanged(auth, async (authUser) => {
     if (authUser) {

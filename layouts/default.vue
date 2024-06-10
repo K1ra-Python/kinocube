@@ -7,7 +7,7 @@
             </div>
         </header>
         <div class="con">
-            <button class="logout" @click="logout">Выйти</button>
+            
             <button class="button" @click="prev">Обратно</button>
             <slot></slot>
         </div>
@@ -25,21 +25,9 @@ import { VuePreloader } from 'vue-preloader';
 import '../node_modules/vue-preloader/dist/style.css'
 import { useRoute, useRouter } from 'vue-router';
 import { async } from '@firebase/util';
-import { signOut } from 'firebase/auth';
-import { getAuth } from 'firebase/auth';
 const router = useRouter();
-const route = useRoute();
-const auth = getAuth();
 const prev = async () => {
     router.go(-1)
-}
-const logout = async () => {
-    await signOut(auth).then(() => {
-        // Sign-out successful.
-        router.push('/authorization');
-    }).catch((error) => {
-        // An error happened.
-    });
 }
 </script>
 <style lang="scss">
@@ -98,7 +86,7 @@ header {
 }
 
 .logout {
-    margin-left: 120px;
+    margin-left: 1220px;
     align-self: flex-end;
     border: 3px solid #fff;
     border-radius: 10px;
