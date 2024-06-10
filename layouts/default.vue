@@ -8,11 +8,17 @@
         </header>
         <div class="con">
             
-            <button class="button" @click="prev">Обратно</button>
+            
             <slot></slot>
         </div>
         <footer>
-            AAAAAAAAAAAA
+            <div class="tt">
+                Веб приложение и дизайн разработано Гученко Максимом aka Kira
+            </div>
+          <div class="lend">
+            Лендинговая страница https://k1ra-python.github.io/k1ra.github.io/
+          </div>
+          
         </footer>
         <VuePreloader background-color="#091a28" color="#ffffff" transition-type="fade-up" :loading-speed="25"
             :transition-speed="1400" @loading-is-over="loadingIsOver" @transition-is-over="transitionIsOver">
@@ -26,9 +32,7 @@ import '../node_modules/vue-preloader/dist/style.css'
 import { useRoute, useRouter } from 'vue-router';
 import { async } from '@firebase/util';
 const router = useRouter();
-const prev = async () => {
-    router.go(-1)
-}
+
 </script>
 <style lang="scss">
 * {
@@ -82,29 +86,24 @@ header {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    flex: 1 0 auto;
+  
 }
 
-.logout {
-    margin-left: 1220px;
-    align-self: flex-end;
-    border: 3px solid #fff;
-    border-radius: 10px;
-    width: 200px;
-    height: 50px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-direction: row;
-    gap: 10px;
-}
+
 
 footer {
+    display: flex;
+    padding: 1%;
+    flex-direction: column;
+    font-size: 20px;
+    color: #fff;
+    height: 110px;
     flex: 0 0 auto;
     backdrop-filter: blur(5px);
     background: rgba(0, 0, 0, 0.8);
     margin-top: auto; // прижимаем футер к низу
     width: 100%; // или max-width, если футер должен быть определенной ширины
     // Стилизация футера
+    gap: 20px;
 }
 </style>

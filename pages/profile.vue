@@ -34,18 +34,14 @@
       </div>
     </div>
     <div class="wrapus">
-     
-      
       <NuxtLink to="favs"><liked></liked></NuxtLink>
-     
+      <button class="goToSearch"  v-if="movies.length" @click="goToMovieDetails(movies[0].id)">
+        К поиску
+      </button>
     </div>
     <!-- Другие элементы интерфейса пользователя -->
   </div>
-  <div class="wrapMovie">
-    <button class="goToSearch"  v-if="movies.length" @click="goToMovieDetails(movies[0].id)">
-      К поиску
-    </button>
-  </div>
+
 </template>
   
 <script setup>
@@ -157,12 +153,11 @@ const goToMovieDetails = (movieName) => {
   
 <style lang="scss">
 .wrapProfile {
-  margin-top: 5%;
-  margin-left: -35%;
+  margin-top: 15%;
   display: flex;
   flex-direction: column;
-  align-items: start;
-  align-content: start;
+  align-items: center;
+  align-content: center;
 }
 
 .imageAndName {
@@ -183,8 +178,25 @@ const goToMovieDetails = (movieName) => {
   }
 }
 
+.logout {
+  position: absolute;
+  top: 40px;
+  right: 100px;
+  align-self: flex-end;
+  border: 3px solid #fff;
+  border-radius: 10px;
+  width: 150px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: row;
+  gap: 10px;
+}
+
 .wrapus {
-  margin-top: 10%;
+  align-self: flex-start;
+  margin-top: 15%;
   display: flex;
   flex-direction: column;
   gap: 40px;
@@ -200,5 +212,11 @@ const goToMovieDetails = (movieName) => {
     flex-direction: row;
     gap: 10px;
 
+}
+
+.iconAndText{
+  gap: 20px;
+  width: 150px;
+  display: flex;
 }
 </style>

@@ -76,7 +76,7 @@
                 <div class="country">Страна: </div>
                 <div class="genre">Жанры: </div>
                 <div class="budget">Бюджет: </div>
-                <div class="dirctr">Продюсер: </div>
+                <div class="dirctr">Режисер: </div>
                 <div class="wrtr">Сценарист: </div>
                 <div class="prcr">Продюсер: </div>
                 <div class="oprtr">Оператор: </div>
@@ -94,15 +94,16 @@
                     {{ genre.name }}<span v-if="index < movieDetail.genres.length - 1">, </span>
                   </span>
                 </div>
-                <div class="theBudget">
+                <div class="theBudget" v-if="hasBudgets">
                   <div class="i" v-if="movieDetail.budget != null">
-                    {{ movieDetail.budget.value }}{{ movieDetail.budget.currency }}
+                    {{ movieDetail.budget.value }}{{ movieDetail.budget.currency }}.
                   </div>
                   <div v-else class="e">
                     ---
                   </div>
                 </div>
-                <div class="directorName">
+                <div class="e" v-else> ---</div>
+                <div class="directorName" v-if="hasDirectors">
                   <span v-for="(persons, index) in movieDetail.persons" :key="index">
                     <div class="mActorN" v-if="persons.profession == 'режиссеры'">
                       {{ persons.name }}.
@@ -112,17 +113,21 @@
                     </div>
                   </span>
                 </div>
-                <div class="writerName">
+                <div class="e" v-else>
+                  ---
+                </div>
+                <div class="writerName" v-if="hasWriters">
                   <span v-for="(persons, index) in movieDetail.persons" :key="index">
                     <div class="mActorN" v-if="persons.profession == 'редакторы'">
                       {{ persons.name }}.
                     </div>
-                    <div v-else class="mActorN" v-if="persons.enProfession == 'writer'">
+                    <div class="mActorN" v-else-if="persons.enProfession == 'writer'">
                       {{ persons.enName }}.
                     </div>
                   </span>
                 </div>
-                <div class="producerName">
+                <div class="e" v-else> ---</div>
+                <div class="producerName" v-if="hasProducers">
                   <span v-for="(persons, index) in movieDetail.persons" :key="index">
                     <div class="mActorN" v-if="persons.profession == 'продюсеры'">
                       {{ persons.name }}.
@@ -132,7 +137,10 @@
                     </div>
                   </span>
                 </div>
-                <div class="operatorName">
+                <div class="e" v-else>
+                  ---
+                </div>
+                <div class="operatorName" v-if="hasOperators">
                   <span v-for="(persons, index) in movieDetail.persons" :key="index">
                     <div class="mActorN" v-if="persons.profession == 'операторы'">
                       {{ persons.name }}.
@@ -142,17 +150,19 @@
                     </div>
                   </span>
                 </div>
-                <div class="compositorName">
+                <div class="e" v-else>---</div>
+                <div class="compositorName" v-if="hasCompositors">
                   <span v-for="(persons, index) in movieDetail.persons" :key="index">
                     <div class="mActorN" v-if="persons.profession == 'композиторы'">
-                      {{ persons.name }}
+                      {{ persons.name }}.
                     </div>
                     <div v-else class="mActorN" v-if="persons.enProfession == 'compositor'">
-                      {{ persons.enName }}
+                      {{ persons.enName }}.
                     </div>
                   </span>
                 </div>
-                <div class="designerName">
+                <div class="e" v-else> ---</div>
+                <div class="designerName" v-if="hasDesigner">
                   <span v-for="(persons, index) in movieDetail.persons" :key="index">
                     <div class="mActorN" v-if="persons.profession == 'художники'">
                       {{ persons.name }}.
@@ -162,7 +172,8 @@
                     </div>
                   </span>
                 </div>
-                <div class="editorName">
+                <div class="e" v-else>---</div>
+                <div class="editorName" v-if="hasEditors">
                   <span v-for="(persons, index) in movieDetail.persons" :key="index">
                     <div class="mActorN" v-if="persons.profession == 'монтажеры'">
                       {{ persons.name }}.
@@ -172,8 +183,9 @@
                     </div>
                   </span>
                 </div>
-                <div class="mAgeRating" v-if="movieDetail.ageRating != null">
-                  {{ movieDetail.ageRating }}
+                <div class="e" v-else>---</div>
+                <div class="mAgeRating" v-if="hasRatings">
+                  {{ movieDetail.ageRating }}.
                 </div>
               </div>
             </div>
@@ -184,11 +196,8 @@
             </div>
             <div class="realActors">
               <span v-for="(persons, index) in movieDetail.persons" :key="index">
-                <div class="mActorN" v-if="persons.profession == 'актеры'">
-                  {{ persons.name }},
-                </div>
-                <div v-else class="mActorN" v-if="persons.enProfession == 'actor'">
-                  {{ persons.enName }},
+                <div class="mActorN" v-if="persons.profession == 'актеры' || persons.profession == 'actor' ">
+                  {{ persons.name }},({{ persons.enName }})
                 </div>
               </span>
             </div>
@@ -197,13 +206,16 @@
             <div class="where">
               <span>Где смотреть</span>
             </div>
-            <div class="mWatch">
+            <div class="mWatch" v-if="movieDetail.watchability.items != []">
               <div class="kiok" v-for="(item, index) in movieDetail.watchability.items" :key="index">
                 <a :href="item.url" target="_blank">
                   <img :src="item.logo.url" :alt="item.name" width="259" height="349">
                   <span>{{ item.name }}</span>
                 </a>
               </div>
+            </div>
+            <div class="eblo" v-else>
+Упс, пока что нигде
             </div>
           </div>
         </div>
@@ -233,6 +245,31 @@ const userProfile = ref({});
 const userFavorites = ref([]);
 const movieDetails = ref([]);
 const kp = new KinopoiskDev('Y5W270D-51F4EHG-KW5T65G-H56CJ96');
+function createProfessionChecker(profession) {
+  return computed(() => {
+    return movieDetails.value.some(movie =>
+      Array.isArray(movie.persons) && movie.persons.some(person =>
+        person.profession === profession || person.enProfession === profession.toLowerCase()
+      )
+    );
+  });
+}
+function hasValueChecker(getValue) {
+  return computed(() => {
+    return movieDetails.value.some(movie => getValue(movie) != null);
+  });
+}
+
+// Здесь возьмем значение рейтинга и бюджета из каждого фильма
+const hasRatings = hasValueChecker(movie => movie.rating);
+const hasBudgets = hasValueChecker(movie => movie.budget);
+const hasWriters = createProfessionChecker('редакторы');
+const hasDirectors = createProfessionChecker('режиссеры');
+const hasProducers = createProfessionChecker('продюсеры');
+const hasOperators = createProfessionChecker('операторы');
+const hasCompositors = createProfessionChecker('композиторы');
+const hasDesigner = createProfessionChecker('художники');
+const hasEditors = createProfessionChecker('монтажеры');
 
 /*Эта асинхронная функция отвечает за показ первого рандомного фильма, дабы внести разнообразие в подборку для пользователя*/
 const getMovieById = async (favoriteId) => {
@@ -269,8 +306,6 @@ onMounted(async () => {
 });
 </script>
 <style lang="scss">
-
-
 .mWrap {
   margin-top: 5%;
   display: flex;
@@ -282,6 +317,7 @@ onMounted(async () => {
 .mPoster {
   img {
     border-radius: 15px;
+    box-shadow: -7px 6px 20px 0 rgba(191, 191, 191, 0.98), -27px 24px 36px 0 rgba(191, 191, 191, 0.85), -62px 53px 49px 0 rgba(191, 191, 191, 0.5), -110px 94px 58px 0 rgba(191, 191, 191, 0.15), -172px 147px 63px 0 rgba(191, 191, 191, 0.02);
   }
 
   div {
@@ -405,6 +441,10 @@ onMounted(async () => {
   width: 1060px;
 }
 
+.compositorName{
+    display: flex;
+    width: 1060px;
+}
 .actors {
   align-self: flex-start;
   margin-top: 10%;
@@ -468,4 +508,13 @@ onMounted(async () => {
       }
     }
   }
-}</style>
+}
+
+.eblo{
+  padding: 5%;
+  margin-left: 250px;
+  font-size: 25px;
+  color: #fff;
+  text-decoration: none;
+}
+</style>

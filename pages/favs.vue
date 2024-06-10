@@ -142,7 +142,7 @@ onMounted(async () => {
   align-items: center;
   gap: 40px;
   margin-top: 5%;
- 
+  padding: 2%;
 
 }
 
