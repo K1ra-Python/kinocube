@@ -130,7 +130,7 @@ function shuffleArray(array) {
 }
 const filterSearch = async (page = currentPage.value) => {
     // Кодируем жанры для URL
-    console.log(selectedGenres.value)
+    
     currentMovieIndex.value = 0;
     const countryFilter = selectedCountry.value
         ? `&countries.name=${encodeURIComponent(selectedCountry.value)}`
@@ -157,15 +157,13 @@ const filterSearch = async (page = currentPage.value) => {
         const data = await response.json();
         const { docs, page, limit } = data;
 
-        console.log(`Страница ${page} из ${limit}`);
-        console.log(docs);
         if (data && Array.isArray(data.docs)) {
             movies.value = shuffleArray(docs);
             currentMovieIndex.value = 0; // Индекс стартует с 0
-            console.log(`Фильмы загружены.Всего фильмов: ${movies.value.length}`);
+
             displayNextMovie(); // Перед этим не было инкремента, так что показываем первый фильм
         } else {
-            console.log('Фильмы по заданным критериям не найдены');
+
             movies.value = []; // Явно устанавливаем пустой массив, если нет фильмов
         }
     } catch (error) {
@@ -173,8 +171,6 @@ const filterSearch = async (page = currentPage.value) => {
     }
 }
 async function displayNextMovie() {
-    console.log(`Текущий индекс до увеличения: ${currentMovieIndex.value}`);
-    console.log(`Всего фильмов: ${movies.value.length}`);
 
     // Если мы достигли конца списка фильмов, запрашиваем следующую страницу
     if (currentMovieIndex.value >= movies.value.length - 1) {
@@ -184,7 +180,6 @@ async function displayNextMovie() {
         // Показываем следующий фильм из списка
         currentMovieIndex.value++;
         const selectedMovie = movies.value[currentMovieIndex.value];
-        console.log(`Переходим к фильму с индексом: ${currentMovieIndex.value}, ID: ${selectedMovie.id}`);
         router.push({
             path: `/listMovies/${selectedMovie.id}`,
             query: { genres: selectedGenres.value.join(',') },
@@ -198,7 +193,7 @@ async function loadNextPage() {
     await filterSearch(currentPage.value);
 }
 const genresQueryString = route.query.genres; // Вытаскиваем строку жанров из URL.
-console.log(genresQueryString);
+
 function handleGenreChange(genre) {
     addOrRemoveGenre(genre);
 }
@@ -220,7 +215,7 @@ const getMovieById = async (movieId) => {
 
         if (data) {
             movieDetails.value = data; // Обновляем реактивное состояние данными о фильме
-            console.log("Подробности фильма:", data);
+
         }
     } catch (error) {
         console.error("Непредвиденная ошибка при получении фильма:", error);
@@ -249,7 +244,7 @@ const likedTitle = async () => {
             favorites: arrayUnion(movieId)
         });
 
-        console.log(`Фильм с ID ${movieId} добавлен в избранное пользователя с ID ${userId}`);
+
     } catch (error) {
         console.error('Ошибка при добавлении фильма в избранное:', error);
     }

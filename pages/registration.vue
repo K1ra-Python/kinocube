@@ -94,7 +94,6 @@ export default defineComponent({
                             avatarkaUrl: '',
                         };
                         router.push('/authorization'); // Например, /profile
-                        console.log('Registered User with avatar:', user.uid);
                     })
 
                     .catch((error) => {

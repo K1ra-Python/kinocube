@@ -131,20 +131,16 @@ const getRelatedByQueryBuilderMovies = async () => {
 
   if (data) {
     const { docs, page, limit } = data;
-    console.log(`Страница ${page} из ${limit}`);
-    console.log(docs);
     movies.value = docs;
   }
 
   // Если будет ошибка, то выведем ее в консоль
-  if (error) console.log(error, message);
-};
+
 const goToMovieDetails = (movieName) => {
   // Здесь используйте актуальный ID фильма, который надо отобразить
   const movieId = movieName;
   const encodedMovieName = encodeURIComponent(movieName); 
-  console.log('Encoded Movie Name: ', encodedMovieName); // Должен выводить закодированное название
-  //console.log(movieId);
+
   router.push(`/listMovies/${encodedMovieName}`);
 };
 

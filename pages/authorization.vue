@@ -71,7 +71,6 @@ export default defineComponent({
                     state.userAuthData.password)
                     .then(async (userCredential) => {
                         // Осуществляем редирект через nuxtApp.router, а не $router
-                        console.log('Attempting to redirect to profile...');
                         router.push('/profile');
                     })
                     .catch((error) => {
