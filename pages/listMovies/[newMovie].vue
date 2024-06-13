@@ -71,7 +71,7 @@
                 <button @click="likedTitle">
                     <img src="~/assets/like.svg">
                 </button>
-                <button class="button" @click="prev">Обратно</button>
+                <button class="button" @click="prev"><img src="~/assets/refresh.svg"></button>
             </div>
         </div>
         
@@ -139,7 +139,7 @@ const filterSearch = async (page = currentPage.value) => {
         ? `&genres.name=${selectedGenres.value.map(encodeURIComponent).join('&')}`
         : '';
     //const genreFilters = selectedGenres.value.map(genre => `genres.name=${encodeURIComponent(genre)}`).join('&');
-    const url = `https://api.kinopoisk.dev/v1.4/movie?page=${page}&limit=250&notNullFields=names.name&notNullFields=description&notNullFields=slogan&notNullFields=poster.url&notNullFields=year&status=completed&${genreFilters}&${countryFilter}`;
+    const url = `https://api.kinopoisk.dev/v1.4/movie?page=${page}&limit=250&notNullFields=names.name&notNullFields=description&notNullFields=slogan&notNullFields=poster.url&notNullFields=year&status=completed&selectFields=&notNullFields=watchability.items.name&notNullFields=watchability.items.url&notNullFields=watchability.items.logo.url&${genreFilters}&${countryFilter}`;
 
     try {
         const response = await fetch(url, {
@@ -348,18 +348,21 @@ onMounted(() => {
 
 .buttonsGudOrNah {
     display: flex;
-    gap: 70px;
+    gap: 90px;
     justify-content: center;
 
     button {
         background-color: rgb(0, 0, 0, 0);
         border: none;
         cursor: pointer;
+        img{
+            width: 120px;
+        }
     }
 }
 
 .reser_or_show_filters {
-    margin-left: 50%;
+    right: 120px;
     position: absolute;
     display: flex;
     flex-direction: column;

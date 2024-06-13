@@ -115,7 +115,7 @@ const getRelatedByQueryBuilderMovies = async () => {
     // Добавляем фильтр поиска по указанному диапазону года
     .filterRange('year', [2020, 2023])
     // Добавляем фильтр поиска по указанному диапазону рейтинга
-    .filterRange('rating.kp', [7.5, 10])
+    .filterRange('rating.kp', [9.1, 10])
     // Добавляем фильтр для поиска фильмов с постером
     .filterExact('poster.url', SPECIAL_VALUE.NOT_NULL)
     // Добавим страны
@@ -135,7 +135,8 @@ const getRelatedByQueryBuilderMovies = async () => {
   }
 
   // Если будет ошибка, то выведем ее в консоль
-
+  if (error) console.log(error, message);
+};
 const goToMovieDetails = (movieName) => {
   // Здесь используйте актуальный ID фильма, который надо отобразить
   const movieId = movieName;

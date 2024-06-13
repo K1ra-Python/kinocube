@@ -2,9 +2,11 @@
     <div class="wrap">
 
         <header>
+            <nuxt-link to="/profile">
             <div class="logo">
                 <img src="~/assets/logo.svg">
             </div>
+        </nuxt-link>
         </header>
         <div class="con">
             
@@ -20,10 +22,7 @@
           </div>
           
         </footer>
-        <VuePreloader background-color="#091a28" color="#ffffff" transition-type="fade-up" :loading-speed="25"
-            :transition-speed="1400" @loading-is-over="loadingIsOver" @transition-is-over="transitionIsOver">
-            <span>You are awesome animation goes here</span>
-        </VuePreloader>
+     
     </div>
 </template>
 <script setup>
@@ -95,9 +94,9 @@ footer {
     display: flex;
     padding: 1%;
     flex-direction: column;
-    font-size: 20px;
+    font-size: 14px;
     color: #fff;
-    height: 110px;
+    height: 80px;
     flex: 0 0 auto;
     backdrop-filter: blur(5px);
     background: rgba(0, 0, 0, 0.8);
