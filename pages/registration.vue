@@ -27,6 +27,7 @@ import { required, email } from '@vuelidate/validators'
 
 export default defineComponent({
     setup() {
+        const router = useRouter(); // Инициализируем router
         const { $firestore } = useNuxtApp();
         const db = ref($firestore);
         const state = reactive({
@@ -69,7 +70,7 @@ export default defineComponent({
 
         async function addUser() {
             v$.value.$touch();
-            const router = useRouter(); // Инициализируем router
+           
             if (!v$.value.$invalid) {
                 const auth = getAuth()
                 createUserWithEmailAndPassword(auth, state.userData.login, state.userData.password)
